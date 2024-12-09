@@ -16,8 +16,8 @@ const UserSchema = new mongoose.Schema({
   role: {
     type: String,
     required: true,
-    enum: ["user", "freelancer"],
-    default: "user",
+    enum: ["client", "freelancer"],
+    default: "client",
   },
   profile_picture: {
     type: String,
