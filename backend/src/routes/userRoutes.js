@@ -3,6 +3,7 @@ import {
   getUsers,
   updateProfile,
   updateProfilPic,
+  getCurrentUser
 } from "../controllers/userController.js";
 import { auth } from "../middleware/authMiddleware.js";
 import upload from "../middleware/multer.js";
@@ -46,6 +47,8 @@ const router = express.Router();
  *                     type: string
  *                   whatsapp_number:
  *                     type: string
+ *                   portfolio:
+ *                     type: object
  *       500:
  *         description: Internal server error
  */
@@ -106,12 +109,35 @@ router.get("/users", auth, getUsers);
  *                       type: string
  *                     whatsapp_number:
  *                       type: string
+ *                     profile_picture:
+ *                       type: string
+ *                     portfolio_urls:
+ *                       type: object
  *       400:
  *         description: Bad request
  *       500:
  *         description: Internal server error
  */
 router.put("/user/:id", auth, updateProfile);
+
+/**
+ * @swagger
+ * /api/user:
+ *   get:
+ *     summary: Get the current user's profile
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Successfully fetched the current user's profile
+ *         
+ *       500:
+ *         description: Internal server error   
+ * 
+ * 
+ */
+router.get("/user", auth,getCurrentUser);
 
 /**
  * @swagger

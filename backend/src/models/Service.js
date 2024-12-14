@@ -23,6 +23,10 @@ const ServiceSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
+  status: {
+    type: Boolean,
+    default: true,
+  },
 });
 
 export default mongoose.model("Service", ServiceSchema);

@@ -11,9 +11,23 @@ export const getUsers = async (req, res) => {
   }
 };
 
+export const getCurrentUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({ user });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch user profile", error: error.message });
+  }
+};
+
 export const updateProfile = async (req, res) => {
   const { id } = req.params;
-  const { name, email, password, bio, whatsapp_number } = req.body;
+  const { name, email, password, bio, whatsapp_number, portfolio_urls } = req.body;
 
   try {
     const user = await User.findById(id).select("role");
@@ -33,7 +47,7 @@ export const updateProfile = async (req, res) => {
     } else if (user.role === "freelancer") {
       const updatedUserFreelancer = await User.findByIdAndUpdate(
         id,
-        { name, email, password, bio, whatsapp_number },
+        { name, email, password, bio, whatsapp_number, portfolio_urls },
         { new: true }
       );
       await updatedUserFreelancer.save();

@@ -20,6 +20,7 @@ const UserSchema = new mongoose.Schema({
     default: "client",
   },
   profile_picture: {
+    default: "https://ik.imagekit.io/cx4xvlk0i/Profile_avatar_placeholder_large%20(1).png?updatedAt=1733991904698",
     type: String,
   },
   bio: {
@@ -28,6 +29,10 @@ const UserSchema = new mongoose.Schema({
   whatsapp_number: {
     type: String,
   },
+  portfolio_urls: {
+    type:[String],
+  },
+
 });
 
 export default mongoose.model("User", UserSchema);
