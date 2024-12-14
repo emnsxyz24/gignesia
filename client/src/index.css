@@ -10,6 +10,20 @@ body {
   background-color: #F2F2F2;
 }
 
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
 .other-side {
   background: rgb(145, 129, 244);
   background: linear-gradient(45deg, rgba(145, 129, 244, 1) 0%, rgba(80, 56, 237, 1) 100%);
@@ -39,11 +53,11 @@ body {
     content: attr(data-content);
     position: relative;
     display: inline-block;
-    color: black;
+    /* color: black; */
     padding: 0 .5em;
     line-height: 1.5em;
     color: #818078;
-    background-color: #fcfcfa;
+    background-color: #f2f2f2;
   }
 }
 
@@ -56,11 +70,75 @@ body {
     border-radius: 8px;
   }
 
+
+
 }
+
 
 .header-nav {
   transition: background-color 0.3s ease-in-out;
 }
+
 .header-nav.scrolled {
   background-color: #F2F2F2;
+}
+
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hidden {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.profile-bg,
+.freelancer-profile-bg,
+.login-page,
+.register-page {
+  background-image: url('./assets/background/bg.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.active{
+  background-color: #f3f4f6;
+  width: 100%;
+  border-radius: 8px;
+}
+
+.loader-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+.loader {
+  width: 150px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 12px solid;
+  border-color: #ffffff #ffffff00;
+  animation: l1 1s infinite;
+}
+@keyframes l1 {to{transform: rotate(.5turn)}}
+
+.emoji-404{
+
+  position: relative;
+  animation: mymove 2.5s infinite;
+}
+
+@keyframes mymove {
+  33%   {top: 0px;}
+  66%  {top: 20px;}
+  100%  {top: 0px}
+
+
+
 }
