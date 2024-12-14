@@ -2,7 +2,6 @@ import express from "express";
 import {
   createService,
   deleteService,
-  getServiceById,
   getServices,
   getServiceById,
   updateService,
