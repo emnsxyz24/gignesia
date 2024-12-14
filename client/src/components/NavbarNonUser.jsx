@@ -85,34 +85,37 @@ const NavbarNonUser = () => {
             "
             >
               <li>
-                <a className="block py-2 px-3 bg-transparent text-white hover:text-[#6051c2] md:p-2">
-                  <Link to="/user">Home</Link>
-                </a>
-              </li>
-              <li>
-                <a
-                  className="block py-2 px-3 text-white hover:text-[#6051c2] md:p-2"
-                //   className="block py-2 px-3 text-[#0B1215] hover:text-[#6051c2] md:p-2"
+                <Link
+                  to="/"
+                  className="block py-2 px-3 bg-transparent text-white hover:text-[#6051c2] md:p-2"
                 >
-                  <Link to="/about">About</Link>
-                </a>
+                  Home
+                </Link>
               </li>
               <li>
-                <a
-                  href="#"
+                <Link
+                  to="/about"
+                  className="block py-2 px-3 text-white hover:text-[#6051c2] md:p-2"
+                  //   className="block py-2 px-3 text-[#0B1215] hover:text-[#6051c2] md:p-2"
+                >
+                  About
+                </Link>
+              </li>
+              <li>
+                <Link to="/login"
                   className="block py-2 px-3 text-white hover:text-[#6051c2] md:p-2"
                 >
                   Login
-                </a>
+                </Link>
               </li>
               <li>
-                <a
+                <Link to="/register"
                   href="#"
                   className="block py-2 px-3 text-white hover:text-[#6051c2] md:p-2 bg-[#6051c2] text-center m-auto rounded-3xl"
                   //   className="block py-2 px-3 text-[#0B1215] hover:text-[#6051c2] md:p-2"
                 >
                   Sign up
-                </a>
+                </Link>
               </li>
               {/* <li>
                 <a
