@@ -1,5 +1,7 @@
 import heroImage from "../assets/heros/hero-image.png";
-import Navbar from "../components/NavbarNonUser";
+import Navbar from "../components/Navbar";
+import {useAuth} from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 const LandingPageNonUser = () => {
   return (
     <>
@@ -28,7 +30,7 @@ const LandingPageNonUser = () => {
                 </p>
                 <div className="flex gap-2">
                   <a
-                    href="#"
+                    href="/login"
                     className="bg-[#6051c2] hover:bg-[#5645c5] text-white font-bold py-3 px-6 rounded-3xl"
                   >
                     Get Started

@@ -1,12 +1,20 @@
-import {React, useState} from "react";
+import {React, useEffect, useState} from "react";
 import heroImage from "../assets/heros/hero-image.png";
 import Navbar from "../components/Navbar";
 import imgSec1 from "../assets/heros/img-section-1.png";
 import LandingPagecard from "../components/LandingPageCard";
 import LandingPageSecCard from "../components/LandingPageSecCard";
+import {useAuth} from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const LandingPage = () => {
-
+  const navigate = useNavigate();
+ const { user } = useAuth();
+ useEffect(() => {
+  if (user.role === "freelancer") {
+    navigate("/dashboard");
+   }
+ },[user]);
   return (
     <>
       <div className="flex flex-col">
@@ -25,10 +33,10 @@ const LandingPage = () => {
                 </p>
                 <div className="flex gap-2">
                   <a
-                    href="#"
+                    href="/carifreelancer"
                     className="bg-[#6051c2] hover:bg-[#5645c5] text-white font-bold py-3 px-6 rounded-3xl"
                   >
-                    Get Started
+                    Cari Freelancer
                   </a>
                 </div>
               </div>
