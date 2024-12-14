@@ -56,6 +56,24 @@ export const createService = async (req, res) => {
   }
 };
 
+export const getServiceById = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const service = await Service.findById(id)
+      .populate("freelancer_id")
+      .populate("category_id");
+
+    if (!service) {
+      return res.status(404).json({ message: "Service not found" });
+    }
+    res.status(200).json(service);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Failed to fetch service", error: error.message });
+  }
+};
+
 export const updateService = async (req, res) => {
   const { id } = req.params;
   const { title, description, category_id, price, freelancer_id } = req.body;

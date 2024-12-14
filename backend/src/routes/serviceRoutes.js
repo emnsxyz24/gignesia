@@ -2,6 +2,7 @@ import express from "express";
 import {
   createService,
   deleteService,
+  getServiceById,
   getServices,
   updateService,
 } from "../controllers/serviceController.js";
@@ -85,6 +86,48 @@ router.get("/services", auth, getServices);
  *         description: Internal server error
  */
 router.post("/service", auth, createService);
+
+/**
+ * @swagger
+ * /api/service/{id}:
+ *   get:
+ *     summary: Get a service by ID
+ *     tags: [Services]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the service to fetch
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Successfully fetched the service
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 _id:
+ *                   type: string
+ *                 title:
+ *                   type: string
+ *                 description:
+ *                   type: string
+ *                 category_id:
+ *                   type: string
+ *                 price:
+ *                   type: number
+ *                 freelancer_id:
+ *                   type: string
+ *       404:
+ *         description: Service not found
+ *       500:
+ *         description: Internal server error
+ */
+router.get("/service/:id", auth, getServiceById);
 
 /**
  * @swagger
