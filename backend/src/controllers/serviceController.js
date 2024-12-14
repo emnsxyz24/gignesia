@@ -2,12 +2,30 @@ import Service from "../models/Service.js";
 
 export const getServices = async (req, res) => {
   try {
-    const services = await Service.find().populate("freelancer_id");
+    const services = await Service.find().populate("freelancer_id").populate("category_id");
     res.status(200).json(services);
   } catch (error) {
     res
       .status(500)
       .json({ message: "Failed to fetch services", error: error.message });
+  }
+};
+
+export const getServiceById = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const service = await Service.findById(id)
+      .populate("freelancer_id")
+      .populate("category_id");
+
+    if (!service) {
+      return res.status(404).json({ message: "Service not found" });
+    }
+    res.status(200).json(service);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Failed to fetch service", error: error.message });
   }
 };
 
@@ -85,6 +103,24 @@ export const updateService = async (req, res) => {
       .json({ message: "Failed to update service", error: error.message });
   }
 };
+
+export const updateServiceStatus = async (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+  try {
+    const updatedService = await Service.findByIdAndUpdate(
+      id,
+      { status },
+      { new: true }
+    );
+    await updatedService.save();
+    res.status(200).json(updatedService);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Failed to update service status", error: error.message });
+  }
+}
 
 export const deleteService = async (req, res) => {
   const { id } = req.params;
