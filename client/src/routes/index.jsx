@@ -16,6 +16,7 @@ import ManageServices from "../pages/freelancer/ManageServices";
 import { useAuth } from "../context/AuthContext";
 import { Loading } from "../components/Loadings";
 import MoneyManagement from "../pages/freelancer/MoneyManagement";
+import HistoryOrders from "../pages/customer/HistoryOrders";
 
 const ProtectedRoute = ({
   children,
@@ -38,8 +39,9 @@ const ProtectedRoute = ({
     return children;
   }
 
-  if (!isAuthenticated && authLoading) {
+  if (!isAuthenticated && !landingPage ) {
     return <ErrorPage />;
+    
   }
 
   if (landingPage) {
@@ -114,6 +116,15 @@ export const router = createBrowserRouter([
     element: (
       <ProtectedRoute>
         <PageFreelancer />
+      </ProtectedRoute>
+    ),
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/history",
+    element: (
+      <ProtectedRoute>
+        <HistoryOrders />
       </ProtectedRoute>
     ),
     errorElement: <ErrorPage />,
