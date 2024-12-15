@@ -2,6 +2,7 @@ import midtransHelper from "../helper/midtrans.js";
 import Order from "../models/Order.js";
 import Service from "../models/Service.js";
 import User from "../models/User.js";
+import Notification from "../models/Notification.js";
 
 export const createOrder = async (req, res) => {
   const { service_id, client_id, freelancer_id, amount, service_name } =
@@ -12,13 +13,11 @@ export const createOrder = async (req, res) => {
     if (!client) {
       return res.status(404).json({ message: "Client not found" });
     }
-    console.log(client);
 
     const service = await Service.findById(service_id);
     if (!service) {
       return res.status(404).json({ message: "Service not found" });
     }
-    console.log(service);
 
     const order = await Order.create({
       service_id,
@@ -47,10 +46,18 @@ export const createOrder = async (req, res) => {
       },
     };
 
+    const notification = {
+      user_id: freelancer_id,
+      order_id: order._id.toString(),
+      message: `Pesanan #${order._id.toString()} baru diterima`,
+    }
+    
     const snapResponse = await midtransHelper.snapPayment(parameter);
 
     order.payment_gateway_id = snapResponse.token;
     await order.save();
+
+    await Notification.create(notification);
 
     res.status(200).json({
       message: "Order created successfully",
@@ -66,26 +73,19 @@ export const createOrder = async (req, res) => {
 };
 
 export const getOrdersByClientId = async (req, res) => {
-  const { client_id } = req.params;
-  console.log("Received client_id:", client_id);
-
   try {
-    const orders = await Order.find({ client_id });
-
+    const {client_id} = req.params;
+    const orders = await Order.find({client_id}).populate("freelancer_id").populate("service_id"); 
     if (!orders || orders.length === 0) {
-      return res
-        .status(404)
-        .json({ message: "No orders found for this client" });
+      return res.status(404).json({ message: "No orders found for this client" });
     }
-
     res.status(200).json(orders);
   } catch (error) {
     console.error(error);
-    res
-      .status(500)
-      .json({ message: "Failed to fetch orders", error: error.message });
+    res.status(500).json({ message: "Failed to fetch orders", error: error.message });
   }
 };
+
 
 export const updateOrderStatus = async (req, res) => {
   const { id } = req.params;
@@ -112,6 +112,7 @@ export const updateOrderStatus = async (req, res) => {
 export const getFreelancerEarnings = async (req, res) => {
   const { freelancer_id } = req.params;
   try {
+    console.log(freelancer_id);
     const orders = await Order.find({
       freelancer_id: freelancer_id,
       status: "completed",
@@ -139,7 +140,7 @@ export const getOrderByFreelancerId = async (req, res) => {
   const { freelancer_id } = req.params;
 
   try {
-    const orders = await Order.find({ freelancer_id });
+    const orders = await Order.find({ freelancer_id }).populate("service_id").populate("client_id");
     if (!orders || orders.length === 0) {
       return res
         .status(404)
