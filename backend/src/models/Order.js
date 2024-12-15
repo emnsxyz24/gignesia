@@ -19,7 +19,7 @@ const OrderSchema = new mongoose.Schema({
   status: {
     type: String,
     default: "pending",
-    enum: ["pending", "in progress", "completed", "cancelled"],
+    enum: ["pending", "in progress", "completed", "cancelled","unknown"],
   },
   payment_gateway_id: { type: String },
   amount: { type: Number, required: true },
