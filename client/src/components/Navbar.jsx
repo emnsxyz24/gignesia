@@ -8,7 +8,6 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
 
-  console.log(user);
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
@@ -86,13 +85,24 @@ const Navbar = () => {
                   isAuthenticated ? "text-gray-800" : "text-white"
                 } hover:text-blue-600`}
               >
-               {isAuthenticated ? "Cari Freelancers" : "Login"}
+                {isAuthenticated ? "Cari Freelancers" : "Login"}
               </Link>
+              <Link
+                to={isAuthenticated ? "/history" : "/login"}
+                className={`${
+                  isAuthenticated ? "text-gray-800" : "text-white"
+                } hover:text-blue-600`}
+              >
+                {isAuthenticated ? "History" : ""}
+              </Link>
+
 
               <div className="relative">
                 <button
                   onClick={toggleProfileDropdown}
-                  className={`focus:outline-none ${isAuthenticated ? "" : "hidden"}`}
+                  className={`focus:outline-none ${
+                    isAuthenticated ? "" : "hidden"
+                  }`}
                 >
                   <img
                     src={user.profile_picture}
@@ -125,7 +135,31 @@ const Navbar = () => {
             </div>
           </div>
 
-          {isMenuOpen && (
+          {!isAuthenticated && isMenuOpen && (
+            <div className="md:hidden">
+              <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white shadow-md rounded-lg">
+                <Link
+                  to="/"
+                  className="text-gray-700 hover:bg-gray-100 block px-3 py-2 rounded-md"
+                >
+                  Home
+                </Link>
+                <Link
+                  to="/about"
+                  className="text-gray-700 hover:bg-gray-100 block px-3 py-2 rounded-md"
+                >
+                  About
+                </Link>
+                <Link
+                  to="/login"
+                  className="text-gray-700 hover:bg-gray-100 block px-3 py-2 rounded-md"
+                >
+                  Login
+                </Link>
+              </div>
+            </div>
+          )}
+          {isAuthenticated && isMenuOpen && (
             <div className="md:hidden">
               <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white shadow-md rounded-lg">
                 <Link
@@ -164,8 +198,6 @@ const Navbar = () => {
             </div>
           )}
         </div>
-
-        
       </nav>
     </>
   );
