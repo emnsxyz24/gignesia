@@ -1,9 +1,43 @@
+import { useEffect, useState } from "react";
 import SideNavbar from "../../components/SideNavbar";
+import { useAuth } from "../../context/AuthContext";
+import { useServices } from "../../context/ServiceContex";
+import { formatDistanceToNow, parseISO } from "date-fns";
+import { id } from "date-fns/locale";
 
 const Dashboard = () => {
+  const { user } = useAuth();
+  const { fetchOrdersByFreelancerId, fetchFreelancerEarnings, getNotifications } = useServices();
+  const [orders, setOrders] = useState([]);
+  const [earnings, setEarnings] = useState(0);
+  const [listNotifications, setListNotifications] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      if (user._id) {
+        try {
+          setIsLoading(true);
+          const response = await fetchOrdersByFreelancerId(user._id);
+          const totalEarnings = await fetchFreelancerEarnings(user._id);
+          const notifications = await getNotifications(user._id);
+          const total = totalEarnings.totalEarnings;
+          setEarnings(total.toLocaleString("id-ID"));
+          setOrders(response.Orders);
+          setListNotifications(notifications.slice(-4));
+        } catch (error) {
+          console.error("Failed to fetch orders:", error);
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    };
+    fetchOrders();
+  }, [user._id]);
+
   return (
     <>
-      <SideNavbar  activeId={"1"}/>
+      <SideNavbar activeId={"1"} />
       <main className="p-4 md:ml-64 h-auto pt-20 ">
         <h1 className="text-3xl font-bold mb-4">Dashboard</h1>
         <div className="flex flex-wrap lg:flex-nowrap gap-4 mb-4 justify-center items-center mx-auto">
@@ -32,7 +66,11 @@ const Dashboard = () => {
             </div>
             <div className="flex justify-between items-start">
               <h1 className="md:text-6xl text-xl font-bold text-green-500 md:pt-5">
-                15
+                {
+                  orders
+                    .map((order) => order.status)
+                    .filter((status) => status === "completed").length
+                }
               </h1>
             </div>
           </div>
@@ -61,7 +99,11 @@ const Dashboard = () => {
             </div>
             <div className="flex justify-between items-start">
               <h1 className="md:text-6xl text-xl font-bold text-blue-500 md:pt-5">
-                5
+                {
+                  orders
+                    .map((order) => order.status)
+                    .filter((status) => status === "pending").length
+                }
               </h1>
             </div>
           </div>
@@ -89,13 +131,13 @@ const Dashboard = () => {
             </div>
             <div className="flex justify-between items-start">
               <h1 className="md:text-6xl text-xl font-bold text-[#6b46c1] md:pt-5">
-                Rp 5,000,000
+                Rp{earnings}
               </h1>
             </div>
           </div>
         </div>
         <div className="border-2 shadow rounded-lg bg-white border-gray-300 dark:border-gray-600 mb-4">
-          <div className="flex p-3 items-center"> 
+          <div className="flex p-3 items-center">
             <h1 className="text-2xl font-semibold">Notifikasi</h1>{" "}
             <svg
               className="w-[30px] h-[30px] text-blue-500 dark:text-white"
@@ -115,17 +157,22 @@ const Dashboard = () => {
               />
             </svg>
           </div>
-          <div className="flex justify-between items-center border p-3 m-3 rounded-md bg-gray-200">
-            <h1>Pesanan Diterima</h1>
-            <span>5 menit yang lalu</span>
-          </div>
-          <div className="flex justify-between items-center border p-3 m-3 rounded-md bg-gray-200">
-            <h1>Pembayaran untuk pesanan #1234 telah diterima</h1>
-            <span>1 jam yang lalu</span>
-          </div><div className="flex justify-between items-center border p-3 m-3 rounded-md bg-gray-200">
-            <h1>Pesanan Diterima</h1>
-            <span>2 jam yang lalu</span>
-          </div>
+          {listNotifications.slice().reverse().map((order, idx) => {
+            const timeAgo = formatDistanceToNow(parseISO(order.created_at), {
+              addSuffix: true,
+              locale: id,
+            });
+
+            return (
+              <div
+                key={idx}
+                className="flex justify-between items-center border p-3 m-3 rounded-md bg-gray-200"
+              >
+                <h1>{order.message}</h1>
+                <span>{timeAgo}</span>
+              </div>
+            );
+          })}
         </div>
       </main>
     </>

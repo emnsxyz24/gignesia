@@ -1,26 +1,36 @@
+import { useEffect, useState } from "react";
 import SideNavbar from "../../components/SideNavbar";
+import { useAuth } from "../../context/AuthContext";
+import { useServices } from "../../context/ServiceContex";
+import { parseISO } from "date-fns";
+
 
 const MoneyManagement = () => {
-  const histories = [
-    {
-      id: 1,
-      ord: "ORD001",
-      total: 5000000,
-      date: "2023-06-01",
-    },
-    {
-      id: 2,
-      ord: "ORD002",
-      total: 2000000,
-      date: "2023-05-28",
-    },
-    {
-      id: 3,
-      ord: "ORD003",
-      total: 3000000,
-      date: "2023-05-25",
-    },
-  ];
+  const { user } = useAuth();
+  const {fetchFreelancerEarnings} = useServices();
+  const [earningsHistory, setEarningsHistory] = useState([]);
+  const [earnings, setEarnings] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      if (user._id) {
+        try {
+          setIsLoading(true);
+          const response = await fetchFreelancerEarnings(user._id);
+          const totalEarnings = response.totalEarnings;
+          setEarnings(totalEarnings.toLocaleString("id-ID"));
+          setEarningsHistory(response.earningsHistory);
+        } catch (error) {
+          console.error("Failed to fetch orders:", error);
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    };
+    fetchOrders();
+  }, [user._id]);
+
   return (
     <>
       <SideNavbar activeId={"4"} />
@@ -29,7 +39,7 @@ const MoneyManagement = () => {
         <div className="border-2 shadow rounded-lg bg-white border-gray-300 dark:border-gray-600 mb-4">
           <h1 className="text-3xl font-bold mb-4 p-4">Saldo Tersedia</h1>
           <h1 className="text-3xl font-bold mb-4 p-4 text-green-500">
-            Rp 10,000,000
+            Rp {earnings}
           </h1>
           <button className="bg-blue-500 text-white rounded-xl p-3 shadow hover:bg-blue-600 m-4">
             Tarik Saldo
@@ -51,23 +61,25 @@ const MoneyManagement = () => {
               </tr>
             </thead>
             <tbody>
-              {histories.map((history) => (
+              {earningsHistory.map((history,idx) => {
+                const parsedDate = parseISO(history.updated_at);
+                return (
                 <tr
-                  key={history.id}
+                  key={idx}
                   className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
                 >
                   <th
                     scope="row"
                     className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                   >
-                    {history.ord}
+                    #{history._id}
                   </th>
                   <td className="px-6 py-4">
-                    Rp {history.total.toLocaleString("id-ID")}
+                    Rp {history.amount.toLocaleString("id-ID")}
                   </td>
-                  <td className="px-6 py-4">{history.date}</td>
+                  <td className="px-6 py-4">{parsedDate.toLocaleDateString("id-ID")}</td>
                 </tr>
-              ))}
+              )})}
             </tbody>
           </table>
         </div>

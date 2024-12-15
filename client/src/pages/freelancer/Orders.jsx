@@ -1,32 +1,32 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import SideNavbar from "../../components/SideNavbar";
+import { useServices } from "../../context/ServiceContex";
+import { useAuth } from "../../context/AuthContext";
 
 const Orders = () => {
+  const { user } = useAuth();
+  const { fetchOrdersByFreelancerId } = useServices();
   const [activeDropdown, setActiveDropdown] = useState(null);
+  const [orders, setOrders] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const orders = [
-    {
-      id: 1,
-      client: "John Doe",
-      service: "Web Design",
-      status: "Pending",
-      date: "2023-06-01",
-    },
-    {
-      id: 2,
-      client: "Jane Smith",
-      service: "Logo Design",
-      status: "In Progress",
-      date: "2023-05-28",
-    },
-    {
-      id: 3,
-      client: "Bob Johnson",
-      service: "SEO Optimization",
-      status: "Completed",
-      date: "2023-05-25",
-    },
-  ];
+  useEffect(() => {
+    const fetchOrders = async () => {
+      if (user._id) {
+        try {
+          setIsLoading(true);
+          const response = await fetchOrdersByFreelancerId(user._id);
+          setOrders(response.Orders);
+          console.log(response.Orders)
+        } catch (error) {
+          console.error("Failed to fetch orders:", error);
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    };
+    fetchOrders();
+  }, [user._id]);
 
   const toggleDropdown = (id) => {
     setActiveDropdown((prevId) => (prevId === id ? null : id));
@@ -103,33 +103,33 @@ const Orders = () => {
               </tr>
             </thead>
             <tbody>
-              {orders.map((order) => (
+              {orders.slice().reverse().map((order,idx) => (
                 <tr
-                  key={order.id}
+                  key={idx}
                   className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
                 >
                   <th
                     scope="row"
                     className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                   >
-                    {order.id}
+                    #{order._id}
                   </th>
-                  <td className="px-6 py-4">{order.client}</td>
-                  <td className="px-6 py-4">{order.service}</td>
+                  <td className="px-6 py-4">{order.client_id.name}</td>
+                  <td className="px-6 py-4">{order.service_id.title}</td>
                   <td className="px-6 py-4">
-                    {order.status === "Pending" && (
+                    {order.status === "cancelled" && (
                       <span className="bg-gray-200 p-2 rounded text-black">
-                        {order.status}
+                        Canceled
                       </span>
                     )}
-                    {order.status === "In Progress" && (
+                    {order.status === "pending" && (
                       <span className="bg-yellow-200 p-2 rounded text-black text-nowrap">
-                        {order.status}
+                        Pending
                       </span>
                     )}
-                    {order.status === "Completed" && (
+                    {order.status === "completed" && (
                       <span className="bg-green-200 p-2 rounded text-green-900">
-                        {order.status}
+                        Completed
                       </span>
                     )}
                   </td>
@@ -137,7 +137,7 @@ const Orders = () => {
                   <td className="px-6 py-4 relative">
                     <div className="relative inline-block">
                       <button
-                        onClick={() => toggleDropdown(order.id)}
+                        onClick={() => toggleDropdown(order._id)}
                         className="flex"
                       >
                         <svg
@@ -157,11 +157,10 @@ const Orders = () => {
                           />
                         </svg>
                       </button>
-                      {activeDropdown === order.id && (
+                      {activeDropdown === order._id && (
                         <div className="absolute bottom-full right-full z-10  bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700">
                           <ul className="py-2 flex text-sm items-center justify-center w-full text-gray-700 dark:text-gray-200">
                             <li className="border-r">
-                              
                               <a
                                 href="#"
                                 className="flex items-center  px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white text-nowrap"
