@@ -53,7 +53,7 @@ export const useServices = () => {
 
   const createService = async (serviceData) => {
     try {
-      const data = {...serviceData, freelancer_id: user._id}
+      const data = { ...serviceData, freelancer_id: user._id };
       const response = await axios.post("/api/service", data);
       return response.data;
     } catch (err) {
@@ -83,5 +83,74 @@ export const useServices = () => {
     }
   };
 
-  return { service,services,ServiceLoading, categories, fetchDetailService, createService, updateServiceStatus, deleteService };
+  const createOrder = async (orderData) => {
+    if (user.role === "client") {
+      try {
+        orderData.client_id = user._id;
+        const response = await axios.post("/api/orders", orderData);
+        return response.data;
+      } catch (err) {
+        console.error("Error creating order:", err);
+        throw err;
+      }
+    } else {
+      throw new Error("You are not a client");
+    }
+  };
+
+  const fetchOrdersByClientId = async (id) => {
+    try {
+      const response = await axios.get(`/api/orders/${id}`);
+      return response.data;
+    } catch (err) {
+      console.error("Error fetching orders:", err);
+      throw err;
+    }
+  };
+
+  const fetchOrdersByFreelancerId = async (id) => {
+    try {
+      const response = await axios.get(`/api/orders/freelancer/${id}`);
+      return response.data;
+    } catch (err) {
+      console.error("Error fetching orders:", err);
+      throw err;
+    }
+  };
+
+  const fetchFreelancerEarnings = async (id) => {
+    try {
+      const response = await axios.get(`/api/orders/${id}/earnings`);
+      return response.data;
+    } catch (err) {
+      console.error("Error fetching freelancer earnings:", err);
+      throw err;
+    }
+  };
+
+  const getNotifications = async (id) => {
+    try {
+      const response = await axios.get(`/api/notifications/${id}`);
+      return response.data;
+    } catch (err) {
+      console.error("Error fetching notifications:", err);
+      throw err;
+    }
+  };
+
+  return {
+    service,
+    services,
+    ServiceLoading,
+    categories,
+    fetchDetailService,
+    createService,
+    updateServiceStatus,
+    deleteService,
+    fetchOrdersByClientId,
+    fetchOrdersByFreelancerId,
+    fetchFreelancerEarnings,
+    createOrder,
+    getNotifications,
+  };
 };

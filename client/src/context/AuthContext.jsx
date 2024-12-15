@@ -12,17 +12,6 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authLoading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const token = Cookies.get("token");
-    if (token) {
-      fetchUser();
-      fetchAllUser();
-      setIsAuthenticated(true);
-
-    }
-    setLoading(false);
-  }, []);
-
   const fetchUser = async () => {
     try {
       const response = await axios.get("/api/user", {
@@ -41,6 +30,16 @@ export const AuthProvider = ({ children }) => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    const token = Cookies.get("token");
+    if (token) {
+      fetchUser();
+      fetchAllUser();
+      setIsAuthenticated(true);
+    }
+    setLoading(false);
+  }, [user]);
   const fetchAllUser = async () => {
     try {
       const response = await axios.get("/api/users", {
@@ -58,17 +57,20 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-
-  const login = async (email, password,role) => {
+  const login = async (email, password, role) => {
     const response = await axios.post("/api/login", { email, password });
     if (response.data.User) {
-      if(role !== response.data.User.role){
-        return MySwals(`You are ${response.data.User.role} not allowed to login as ${role}`, "error"); 
-      } else{
+      if (role !== response.data.User.role) {
+        return MySwals(
+          `You are ${response.data.User.role} not allowed to login as ${role}`,
+          "error"
+        );
+      } else {
         Cookies.set("token", response.data.User.token, {
           expires: 1,
           secure: process.env.NODE_ENV === "production",
         });
+        
         await fetchUser();
         MySwals("Login successful", "success");
       }
@@ -110,33 +112,33 @@ export const AuthProvider = ({ children }) => {
       if (data.newPassword) {
         const currentUserResponse = await axios.get(`/api/user`);
         const currentUser = currentUserResponse.data.user;
-  
+
         const isOldPasswordCorrect = await bcrypt.compare(
           data.oldPassword,
           currentUser.password
         );
-  
+
         if (!isOldPasswordCorrect) {
           MySwals("Password lama salah!", "error");
           throw new Error("Password lama salah!");
         }
-  
+
         if (data.newPassword !== data.confirmNewPassword) {
           MySwals("Password baru tidak cocok!", "error");
           throw new Error("Password baru tidak cocok!");
         }
-  
+
         const formData = {
           ...data,
-          password: await bcrypt.hash(data.newPassword, 10)
+          password: await bcrypt.hash(data.newPassword, 10),
         };
-  
+
         delete formData.oldPassword;
         delete formData.newPassword;
         delete formData.confirmNewPassword;
-  
+
         const response = await axios.put(`/api/user/${id}`, formData);
-  
+
         if (response.status === 200) {
           MySwals("Profil berhasil diperbarui!", "success");
           return true;
@@ -146,7 +148,7 @@ export const AuthProvider = ({ children }) => {
         }
       } else {
         const response = await axios.put(`/api/user/${id}`, data);
-  
+
         if (response.status === 200) {
           MySwals("Profil berhasil diperbarui!", "success");
           return true;
@@ -166,6 +168,7 @@ export const AuthProvider = ({ children }) => {
     Cookies.remove("token");
     setUser([]);
     setIsAuthenticated(false);
+    window.location.href = "/login";
   };
 
   useEffect(() => {
