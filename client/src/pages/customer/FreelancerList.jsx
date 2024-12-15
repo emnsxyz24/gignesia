@@ -10,6 +10,8 @@ const PageFreelancer_Client = () => {
   const [inputSearch, setInputSearch] = useState("");
 
   const filteredServices = services.filter((service) => {
+    const activeService = service.status === true;
+
     const matchesCategory =
       !selectedCategory || service.category_id.name === selectedCategory;
 
@@ -21,7 +23,7 @@ const PageFreelancer_Client = () => {
       service.title.toLowerCase().includes(searchTerm.toLowerCase());
 
 
-    return matchesCategory && matchesSearch;
+    return matchesCategory && matchesSearch && activeService;
   });
 
   const handleCategorySelect = (categoryName) => {
