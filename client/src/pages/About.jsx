@@ -2,6 +2,7 @@ import Navbar from "../components/Navbar";
 import heroImage from "../assets/heros/hero-about.png";
 import temp_prof from "../assets/temp_prof.jpeg";
 import { useAuth } from "../context/AuthContext";
+import Footer from "../components/Footer";
 
 const About = () => {
   const { isAuthenticated } = useAuth();
@@ -144,6 +145,7 @@ const About = () => {
           ))}
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

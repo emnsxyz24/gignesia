@@ -1,24 +1,25 @@
-import {React, useEffect, useState} from "react";
+import { React, useEffect, useState } from "react";
 import heroImage from "../assets/heros/hero-image.png";
 import Navbar from "../components/Navbar";
 import imgSec1 from "../assets/heros/img-section-1.png";
 import LandingPagecard from "../components/LandingPageCard";
 import LandingPageSecCard from "../components/LandingPageSecCard";
-import {useAuth} from "../context/AuthContext";
+import Footer from "../components/Footer";
+import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 const LandingPage = () => {
   const navigate = useNavigate();
- const { user } = useAuth();
- useEffect(() => {
-  if (user.role === "freelancer") {
-    navigate("/dashboard");
-   }
- },[user]);
+  const { user } = useAuth();
+  useEffect(() => {
+    if (user.role === "freelancer") {
+      navigate("/dashboard");
+    }
+  }, [user]);
   return (
     <>
-      <div className="flex flex-col">
-          <Navbar />
+      <div className="min-h-screen flex flex-col">
+        <Navbar />
         <div className=" flex justify-center items-center h-screen">
           <div className="container mx-auto p-4">
             <div className="flex flex-col md:flex-row items-center">
@@ -40,14 +41,14 @@ const LandingPage = () => {
                   </a>
                 </div>
               </div>
-              <div className="md:w-1/2 lg:w-1/3 mt-8 md:mt-0">
+              <div className="md:w-1/2 lg:w-1/3 mt-8 md:mt-0 ">
                 <img src={heroImage} alt="Hero Image" className="rounded-lg" />
               </div>
             </div>
           </div>
         </div>
 
-        <div className=" flex justify-center items-center h-screen">
+        <div className=" flex justify-center items-center h-[100vh]">
           <div className="container mx-auto p-4">
             <div className="flex flex-col md:flex-row items-center">
               <div className="md:w-1/2 lg:w-2/3">
@@ -66,7 +67,7 @@ const LandingPage = () => {
           </div>
         </div>
 
-        <div id="sec3" className="flex justify-center items-center h-screen">
+        <div id="sec3" className="flex justify-center items-center h-[100vh]">
           <div className="container mx-auto p-4 space-y-5">
             <div>
               <h1 className="text-4xl text-[#0B1215] font-bold mb-6 ">
@@ -76,12 +77,13 @@ const LandingPage = () => {
             <LandingPagecard />
             <div>
               <h1 className="text-4xl text-[#0B1215] font-bold mb-6 ">
-              Kenapa Menggunakan GigNesia Untuk Kebutuhan Freelance Anda?
+                Kenapa Menggunakan GigNesia Untuk Kebutuhan Freelance Anda?
               </h1>
             </div>
             <LandingPageSecCard />
           </div>
         </div>
+        <Footer />
       </div>
     </>
   );
