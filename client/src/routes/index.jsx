@@ -1,4 +1,7 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
+import Cookies from "js-cookie";
+
+import { useEffect } from "react";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import ErrorPage from "../pages/Error-pages";
@@ -17,6 +20,8 @@ import { useAuth } from "../context/AuthContext";
 import { Loading } from "../components/Loadings";
 import MoneyManagement from "../pages/freelancer/MoneyManagement";
 import HistoryOrders from "../pages/customer/HistoryOrders";
+import ServiceReviewForm from "../components/ReviewForm";
+
 
 const ProtectedRoute = ({
   children,
@@ -26,7 +31,15 @@ const ProtectedRoute = ({
   clientElement = null,
   freelancerElement = null,
 }) => {
-  const { isAuthenticated, user, authLoading } = useAuth();
+  const { isAuthenticated, user, authLoading, fetchUser } = useAuth();
+  
+  const token = Cookies.get("token");
+  useEffect(() => {
+    if (token && !user) {
+      fetchUser();
+    }
+  }, [token, user, fetchUser]);
+
   if (authLoading) {
     return <Loading />;
   }
@@ -39,20 +52,19 @@ const ProtectedRoute = ({
     return children;
   }
 
-  if (!isAuthenticated && !landingPage ) {
+  if (!isAuthenticated && !landingPage) {
     return <ErrorPage />;
-    
   }
 
   if (landingPage) {
     return isAuthenticated ? <LandingPageUser /> : <LandingPageNonUser />;
   }
 
-  if(user.role){
+  if (user.role) {
     if (allowedRoles.length > 0 && !allowedRoles.includes(user.role)) {
-      console.error('Access denied: User role not allowed', { 
-        userRole: user.role, 
-        allowedRoles ,
+      console.error("Access denied: User role not allowed", {
+        userRole: user.role,
+        allowedRoles,
       });
       return <ErrorPage />;
     }
@@ -180,6 +192,15 @@ export const router = createBrowserRouter([
     element: (
       <ProtectedRoute allowedRoles={["freelancer"]}>
         <MoneyManagement />
+      </ProtectedRoute>
+    ),
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/test",
+    element: (
+      <ProtectedRoute allowedRoles={["client"]}>
+        <ServiceReviewForm />
       </ProtectedRoute>
     ),
     errorElement: <ErrorPage />,

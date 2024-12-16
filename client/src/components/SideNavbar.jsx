@@ -181,7 +181,7 @@ const SideNavbar = (props) => {
           >
             <div className="flex flex-row justify-center items-center p-4 gap-3">
               <img
-                className="rounded-full"
+                className="rounded-full object-cover w-10 h-10"
                 width={30}
                 src={user.profile_picture}
                 alt="Avatar"

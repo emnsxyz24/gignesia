@@ -1,11 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ClientReview from "../../components/ClientReview";
 import SideNavbar from "../../components/SideNavbar";
 import { useAuth } from "../../context/AuthContext";
+import { useServices } from "../../context/ServiceContex";
 import Swal from "sweetalert2";
 
 const Profile = () => {
   const { user, updateUser } = useAuth();
+  const { getReviews } = useServices();
+  const [reviews, setReviews] = useState([]);
   const [formData, setFormData] = useState({
     name: user.name || "",
     whatsapp_number: user.whatsapp_number || "",
@@ -16,6 +19,20 @@ const Profile = () => {
     newPassword: "",
     confirmNewPassword: "",
   });
+
+  useEffect(() => {
+    const fetchReviews = async () => {
+      if (user._id) {
+        try {
+          const response = await getReviews(user._id);
+          setReviews(response.data);
+        } catch (error) {
+          console.error("Error fetching reviews:", error);
+        }
+      }
+    };
+    fetchReviews();
+  }, [user._id]);
 
   const [passwordChangeEnabled, setPasswordChangeEnabled] = useState(false);
 
@@ -280,21 +297,18 @@ const Profile = () => {
         </div>
         <div className="p-5 bg-white shadow rounded-lg border-gray-300 dark:border-gray-600 w-full mb-2">
           <h1 className="text-3xl font-bold mb-4">Ulasan Klien</h1>
-          <ClientReview
-            name="Edy Mikhael"
-            review="Project membuat website untuk..."
-            rating={3}
-          />
-          <ClientReview
-            name="Edy Mikhael"
-            review="Project membuat website untuk..."
-            rating={5}
-          />
-          <ClientReview
-            name="Edy Mikhael"
-            review="Project membuat website untuk..."
-            rating={2.5}
-          />
+          {reviews.length > 0 ? (
+            reviews.map((review, idx) => (
+              <div key={idx} className="mb-4 border-b border-gray-300 ">
+                Ulasan pada jasa {review.orderId.service_id.title}
+                <ClientReview review={review.comment} name={review.userId.name} rating={review.rating} />
+              </div>
+            ))
+          ) : (
+            <p className="text-gray-600 dark:text-gray-400">
+              Belum ada ulasan.
+            </p>
+          )}
         </div>
       </main>
     </>

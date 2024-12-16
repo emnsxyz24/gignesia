@@ -2,6 +2,7 @@ import { useServices } from "../../context/ServiceContex";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "../../components/Navbar";
+import Footer from "../../components/Footer";
 
 const PageFreelancer_Client = () => {
   const { services, categories } = useServices();
@@ -129,6 +130,7 @@ const PageFreelancer_Client = () => {
           </Link>
         ))}
       </div>
+      <Footer />
 
     </div>
   );

@@ -2,26 +2,28 @@ import { useState, useEffect } from "react";
 import SideNavbar from "../../components/SideNavbar";
 import { useServices } from "../../context/ServiceContex";
 import { useAuth } from "../../context/AuthContext";
+import { Loading } from "../../components/Loadings";
 
 const Orders = () => {
   const { user } = useAuth();
   const { fetchOrdersByFreelancerId } = useServices();
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [orders, setOrders] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [ordersPerPage] = useState(10);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchOrders = async () => {
       if (user._id) {
         try {
-          setIsLoading(true);
+          setLoading(true);
           const response = await fetchOrdersByFreelancerId(user._id);
-          setOrders(response.Orders);
-          console.log(response.Orders)
+          setOrders(response);
         } catch (error) {
           console.error("Failed to fetch orders:", error);
         } finally {
-          setIsLoading(false);
+          setLoading(false);
         }
       }
     };
@@ -30,6 +32,26 @@ const Orders = () => {
 
   const toggleDropdown = (id) => {
     setActiveDropdown((prevId) => (prevId === id ? null : id));
+  };
+
+  // pagination
+  const indexOfLastOrder = currentPage * ordersPerPage;
+  const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
+  const currentOrders = orders
+    .slice()
+    .reverse()
+    .slice(indexOfFirstOrder, indexOfLastOrder);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  const totalPages = Math.ceil(orders.length / ordersPerPage);
+
+  const getPageNumbers = () => {
+    const pageNumbers = [];
+    for (let i = 1; i <= totalPages; i++) {
+      pageNumbers.push(i);
+    }
+    return pageNumbers;
   };
 
   return (
@@ -103,89 +125,186 @@ const Orders = () => {
               </tr>
             </thead>
             <tbody>
-              {orders.slice().reverse().map((order,idx) => (
-                <tr
-                  key={idx}
-                  className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
-                >
-                  <th
-                    scope="row"
-                    className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                  >
-                    #{order._id}
+              {loading ? (
+                <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                  <th scope="row"
+                        className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                  <div className="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-24 mb-4 animate-pulse"></div>
                   </th>
-                  <td className="px-6 py-4">{order.client_id.name}</td>
-                  <td className="px-6 py-4">{order.service_id.title}</td>
                   <td className="px-6 py-4">
-                    {order.status === "cancelled" && (
-                      <span className="bg-gray-200 p-2 rounded text-black">
-                        Canceled
-                      </span>
-                    )}
-                    {order.status === "pending" && (
-                      <span className="bg-yellow-200 p-2 rounded text-black text-nowrap">
-                        Pending
-                      </span>
-                    )}
-                    {order.status === "completed" && (
-                      <span className="bg-green-200 p-2 rounded text-green-900">
-                        Completed
-                      </span>
-                    )}
+                    <div className="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-24 mb-4 animate-pulse"></div>
                   </td>
-                  <td className="px-6 py-4">{order.date}</td>
-                  <td className="px-6 py-4 relative">
-                    <div className="relative inline-block">
-                      <button
-                        onClick={() => toggleDropdown(order._id)}
-                        className="flex"
-                      >
-                        <svg
-                          className="w-6 h-6 text-gray-800 dark:text-white"
-                          aria-hidden="true"
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            stroke="currentColor"
-                            strokeLinecap="round"
-                            strokeWidth="3"
-                            d="M12 6h.01M12 12h.01M12 18h.01"
-                          />
-                        </svg>
-                      </button>
-                      {activeDropdown === order._id && (
-                        <div className="absolute bottom-full right-full z-10  bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700">
-                          <ul className="py-2 flex text-sm items-center justify-center w-full text-gray-700 dark:text-gray-200">
-                            <li className="border-r">
-                              <a
-                                href="#"
-                                className="flex items-center  px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white text-nowrap"
-                              >
-                                Action 1
-                              </a>
-                            </li>
-                            <li>
-                              <a
-                                href="#"
-                                className="flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white text-nowrap"
-                              >
-                                Action 2
-                              </a>
-                            </li>
-                          </ul>
-                        </div>
-                      )}
-                    </div>
+                  <td className="px-6 py-4">
+                    <div className="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-24 mb-4 animate-pulse"></div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-24 mb-4 animate-pulse"></div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-24 mb-4 animate-pulse"></div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-24 mb-4 animate-pulse"></div>
                   </td>
                 </tr>
-              ))}
+              ) : (
+                currentOrders.map((order, idx) => {
+                  return (
+                    <tr
+                      key={idx}
+                      className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+                    >
+                      <th
+                        scope="row"
+                        className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                      >
+                        #{order._id}
+                      </th>
+                      <td className="px-6 py-4">{order.client_id.name}</td>
+                      <td className="px-6 py-4">{order.service_id.title}</td>
+                      <td className="px-6 py-4">
+                        {order.status === "cancelled" && (
+                          <span className="bg-gray-200 p-2 rounded text-black">
+                            Canceled
+                          </span>
+                        )}
+                        {order.status === "pending" && (
+                          <span className="bg-yellow-200 p-2 rounded text-black text-nowrap">
+                            Pending
+                          </span>
+                        )}
+                        {order.status === "completed" && (
+                          <span className="bg-green-200 p-2 rounded text-green-900">
+                            Completed
+                          </span>
+                        )}
+                      </td>
+                      <td className="px-6 py-4">{order.formattedUpdateAt}</td>
+                      <td className="px-6 py-4 relative">
+                        <div className="relative inline-block">
+                          <button
+                            onClick={() => toggleDropdown(order._id)}
+                            className="flex"
+                          >
+                            <svg
+                              className="w-6 h-6 text-gray-800 dark:text-white"
+                              aria-hidden="true"
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="24"
+                              height="24"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                stroke="currentColor"
+                                strokeLinecap="round"
+                                strokeWidth="3"
+                                d="M12 6h.01M12 12h.01M12 18h.01"
+                              />
+                            </svg>
+                          </button>
+                          {activeDropdown === order._id && (
+                            <div className="absolute bottom-full right-full z-10  bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700">
+                              <ul className="py-2 flex text-sm items-center justify-center w-full text-gray-700 dark:text-gray-200">
+                                <li className="border-r">
+                                  <a
+                                    href="#"
+                                    className="flex items-center  px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white text-nowrap"
+                                  >
+                                    Action 1
+                                  </a>
+                                </li>
+                                <li>
+                                  <a
+                                    href="#"
+                                    className="flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white text-nowrap"
+                                  >
+                                    Action 2
+                                  </a>
+                                </li>
+                              </ul>
+                            </div>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
             </tbody>
           </table>
         </div>
+        <nav aria-label="Page navigation" className="mt-4 flex justify-center">
+          <ul className="flex items-center -space-x-px h-8 text-sm">
+            <li>
+              <button
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+                className="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <span className="sr-only">Previous</span>
+                <svg
+                  className="w-2.5 h-2.5 rtl:rotate-180"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 6 10"
+                >
+                  <path
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M5 1 1 5l4 4"
+                  />
+                </svg>
+              </button>
+            </li>
+
+            {getPageNumbers().map((number) => (
+              <li key={number}>
+                <button
+                  onClick={() => paginate(number)}
+                  aria-current={currentPage === number ? "page" : undefined}
+                  className={`flex items-center justify-center px-3 h-8 leading-tight ${
+                    currentPage === number
+                      ? "z-10 text-blue-600 border border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white"
+                      : "text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                  }`}
+                >
+                  {number}
+                </button>
+              </li>
+            ))}
+
+            <li>
+              <button
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                }
+                disabled={currentPage === totalPages}
+                className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <span className="sr-only">Next</span>
+                <svg
+                  className="w-2.5 h-2.5 rtl:rotate-180"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 6 10"
+                >
+                  <path
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="m1 9 4-4-4-4"
+                  />
+                </svg>
+              </button>
+            </li>
+          </ul>
+        </nav>
       </main>
     </>
   );

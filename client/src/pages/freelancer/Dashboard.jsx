@@ -7,28 +7,32 @@ import { id } from "date-fns/locale";
 
 const Dashboard = () => {
   const { user } = useAuth();
-  const { fetchOrdersByFreelancerId, fetchFreelancerEarnings, getNotifications } = useServices();
+  const {
+    fetchOrdersByFreelancerId,
+    fetchFreelancerEarnings,
+    getNotifications,
+  } = useServices();
   const [orders, setOrders] = useState([]);
   const [earnings, setEarnings] = useState(0);
   const [listNotifications, setListNotifications] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchOrders = async () => {
       if (user._id) {
         try {
-          setIsLoading(true);
+          setLoading(true);
           const response = await fetchOrdersByFreelancerId(user._id);
           const totalEarnings = await fetchFreelancerEarnings(user._id);
           const notifications = await getNotifications(user._id);
           const total = totalEarnings.totalEarnings;
           setEarnings(total.toLocaleString("id-ID"));
-          setOrders(response.Orders);
+          setOrders(response);
           setListNotifications(notifications.slice(-4));
         } catch (error) {
           console.error("Failed to fetch orders:", error);
         } finally {
-          setIsLoading(false);
+          setLoading(false);
         }
       }
     };
@@ -66,11 +70,13 @@ const Dashboard = () => {
             </div>
             <div className="flex justify-between items-start">
               <h1 className="md:text-6xl text-xl font-bold text-green-500 md:pt-5">
-                {
+                {loading ? (
+                  <div className="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-24 mb-4 animate-pulse"></div>
+                ) : (
                   orders
                     .map((order) => order.status)
                     .filter((status) => status === "completed").length
-                }
+                )}
               </h1>
             </div>
           </div>
@@ -99,11 +105,13 @@ const Dashboard = () => {
             </div>
             <div className="flex justify-between items-start">
               <h1 className="md:text-6xl text-xl font-bold text-blue-500 md:pt-5">
-                {
+                {loading ? (
+                  <div className="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-24 mb-4 animate-pulse"></div>
+                ) : (
                   orders
                     .map((order) => order.status)
                     .filter((status) => status === "pending").length
-                }
+                )}
               </h1>
             </div>
           </div>
@@ -131,7 +139,11 @@ const Dashboard = () => {
             </div>
             <div className="flex justify-between items-start">
               <h1 className="md:text-6xl text-xl font-bold text-[#6b46c1] md:pt-5">
-                Rp{earnings}
+                {loading ? (
+                  <div className="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-24 mb-4 animate-pulse"></div>
+                ) : (
+                  `Rp${earnings}`
+                )}
               </h1>
             </div>
           </div>
@@ -157,22 +169,34 @@ const Dashboard = () => {
               />
             </svg>
           </div>
-          {listNotifications.slice().reverse().map((order, idx) => {
-            const timeAgo = formatDistanceToNow(parseISO(order.created_at), {
-              addSuffix: true,
-              locale: id,
-            });
+          {loading ? (
+            <div className="px-2">
+              <div className="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-full mb-4 animate-pulse"></div>
+            </div>
+          ) : (
+            listNotifications
+              .slice()
+              .reverse()
+              .map((order, idx) => {
+                const timeAgo = formatDistanceToNow(
+                  parseISO(order.created_at),
+                  {
+                    addSuffix: true,
+                    locale: id,
+                  }
+                );
 
-            return (
-              <div
-                key={idx}
-                className="flex justify-between items-center border p-3 m-3 rounded-md bg-gray-200"
-              >
-                <h1>{order.message}</h1>
-                <span>{timeAgo}</span>
-              </div>
-            );
-          })}
+                return (
+                  <div
+                    key={idx}
+                    className="flex justify-between items-center border p-3 m-3 rounded-md bg-gray-200"
+                  >
+                    <h1>{order.message}</h1>
+                    <span>{timeAgo}</span>
+                  </div>
+                );
+              })
+          )}
         </div>
       </main>
     </>

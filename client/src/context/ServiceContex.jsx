@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "../utils/axiosConfig";
 import { useAuth } from "./AuthContext";
+import { parse, parseISO } from "date-fns";
 
 export const useServices = () => {
   const { user } = useAuth();
@@ -111,7 +112,11 @@ export const useServices = () => {
   const fetchOrdersByFreelancerId = async (id) => {
     try {
       const response = await axios.get(`/api/orders/freelancer/${id}`);
-      return response.data;
+      const formattedResponse = response.data.Orders.map(order => ({
+        ...order, 
+        formattedUpdateAt: parseISO(order.updated_at).toLocaleDateString("id-ID")
+      }))
+      return formattedResponse;
     } catch (err) {
       console.error("Error fetching orders:", err);
       throw err;
@@ -138,6 +143,27 @@ export const useServices = () => {
     }
   };
 
+  const getReviews = async (id) => {
+    try {
+      const response = await axios.get(`/api/reviews/${id}`);
+      return response.data;
+    } catch (err) {
+      console.error("Error fetching reviews:", err);
+      throw err;
+    }
+  };
+
+  const createReview = async (reviewData) => {
+    try {
+      const response = await axios.post("/api/reviews", reviewData);
+      return response.data;
+    } catch (err) {
+      console.error("Error creating review:", err);
+      throw err;
+    }
+  };
+
+
   return {
     service,
     services,
@@ -152,5 +178,7 @@ export const useServices = () => {
     fetchFreelancerEarnings,
     createOrder,
     getNotifications,
+    getReviews,
+    createReview,
   };
 };

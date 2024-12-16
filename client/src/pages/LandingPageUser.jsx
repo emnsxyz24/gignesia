@@ -19,7 +19,7 @@ const LandingPage = () => {
     <>
       <div className="flex flex-col">
           <Navbar />
-        <div className=" flex justify-center items-center  h-screen">
+        <div className=" flex justify-center items-center h-screen">
           <div className="container mx-auto p-4">
             <div className="flex flex-col md:flex-row items-center">
               <div className="md:w-1/2 lg:w-2/3">

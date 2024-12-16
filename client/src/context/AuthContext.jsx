@@ -7,16 +7,17 @@ import bcrypt from "bcryptjs";
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState({});
+  const token = Cookies.get("token");
+  const [user, setUser] = useState(null);
   const [users, setUsers] = useState([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authLoading, setLoading] = useState(true);
-
+  
   const fetchUser = async () => {
     try {
       const response = await axios.get("/api/user", {
         headers: {
-          Authorization: `Bearer ${Cookies.get("token")}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       const result = await response.data;
@@ -24,27 +25,18 @@ export const AuthProvider = ({ children }) => {
       setIsAuthenticated(true);
     } catch (error) {
       console.error("Failed to fetch user:", error);
-      setUser([]);
+      setUser(null);
       setIsAuthenticated(false);
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    const token = Cookies.get("token");
-    if (token) {
-      fetchUser();
-      fetchAllUser();
-      setIsAuthenticated(true);
-    }
-    setLoading(false);
-  }, [user]);
   const fetchAllUser = async () => {
     try {
       const response = await axios.get("/api/users", {
         headers: {
-          Authorization: `Bearer ${Cookies.get("token")}`,
+          Authorization: `Bearer ${token}`, 
         },
       });
       const result = await response.data;
@@ -56,6 +48,15 @@ export const AuthProvider = ({ children }) => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (token) {
+      fetchUser();
+      fetchAllUser();
+    }else{
+    setLoading(false);
+    }
+  }, []);
 
   const login = async (email, password, role) => {
     const response = await axios.post("/api/login", { email, password });
@@ -70,7 +71,7 @@ export const AuthProvider = ({ children }) => {
           expires: 1,
           secure: process.env.NODE_ENV === "production",
         });
-        
+
         await fetchUser();
         MySwals("Login successful", "success");
       }
@@ -146,7 +147,8 @@ export const AuthProvider = ({ children }) => {
           MySwals("User update failed", "error");
           throw new Error("Gagal memperbarui profil");
         }
-      } else {
+      } else
+        {
         const response = await axios.put(`/api/user/${id}`, data);
 
         if (response.status === 200) {
@@ -156,6 +158,26 @@ export const AuthProvider = ({ children }) => {
           MySwals("Gagal memperbarui profil", "error");
           throw new Error("Gagal memperbarui profil");
         }
+      }
+    } catch (error) {
+      console.error("Error updating user:", error);
+      MySwals("An error occurred while updating user", "error");
+      throw error;
+    }
+  };
+
+  const updateProfilePicture = async (id, data) => {
+    const formData = new FormData();
+    formData.append("profile_picture", data);
+    try {
+      console.log(data)
+      const response = await axios.put(`/api/user/${id}/profile-picture`, formData);
+
+      if (response.status === 200) {
+        MySwals("Profil berhasil diperbarui!", "success");
+      } else {
+        MySwals("Gagal memperbarui profil", "error");
+        throw new Error("Gagal memperbarui profil");
       }
     } catch (error) {
       console.error("Error updating user:", error);
@@ -197,6 +219,9 @@ export const AuthProvider = ({ children }) => {
         register,
         logout,
         updateUser,
+        fetchUser,
+        fetchAllUser,
+        updateProfilePicture
       }}
     >
       {children}

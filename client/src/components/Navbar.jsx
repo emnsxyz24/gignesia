@@ -11,7 +11,6 @@ const Navbar = () => {
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
-
   const toggleProfileDropdown = () => {
     setIsProfileDropdownOpen(!isProfileDropdownOpen);
   };
@@ -105,7 +104,7 @@ const Navbar = () => {
                   }`}
                 >
                   <img
-                    src={user.profile_picture}
+                    src={user?.profile_picture}
                     alt="Profile"
                     className="rounded-full w-10 h-10 object-cover"
                   />
