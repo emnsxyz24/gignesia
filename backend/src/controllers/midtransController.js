@@ -8,6 +8,7 @@ dotenv.config();
 export const midtransWebhookHandler = async (req, res) => {
   const serverKey = process.env.MIDTRANS_SERVER_KEY;
   const body = req.body;
+  console.log(body)
   try {
     const { order_id, status_code, gross_amount, signature_key } = body;
     const signatureInput = `${order_id}${status_code}${gross_amount}${serverKey}`;

@@ -181,8 +181,8 @@ router.get("/user", auth,getCurrentUser);
  */
 router.put(
   "/user/:id/profile-picture",
-  upload.single("profilePic"),
   auth,
+  upload.single("profile_picture"),
   updateProfilPic
 );
 

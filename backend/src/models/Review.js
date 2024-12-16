@@ -1,10 +1,10 @@
 import mongoose from "mongoose";
 
 const reviewSchema = new mongoose.Schema({
-  serviceId: {
+  orderId: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
-    ref: 'Service'
+    ref: 'Order'
   },
   userId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -13,12 +13,19 @@ const reviewSchema = new mongoose.Schema({
   },
   rating: {
     type: Number,
-    required: true
+    required: true,
+    min: 0,
+    max: 5
   },
   comment: {
     type: String,
     required: true
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
   }
-});
+}, { timestamps: true });
+
 
 export default mongoose.model("Review", reviewSchema);
