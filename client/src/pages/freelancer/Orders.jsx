@@ -2,49 +2,116 @@ import { useState, useEffect } from "react";
 import SideNavbar from "../../components/SideNavbar";
 import { useServices } from "../../context/ServiceContex";
 import { useAuth } from "../../context/AuthContext";
-import { Loading } from "../../components/Loadings";
+import Swal from "sweetalert2";
 
 const Orders = () => {
   const { user } = useAuth();
-  const { fetchOrdersByFreelancerId } = useServices();
+  const { fetchOrdersByFreelancerId, updateOrderProgressStatus } =
+    useServices();
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [orders, setOrders] = useState([]);
+  const [filteredOrders, setFilteredOrders] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [ordersPerPage] = useState(10);
   const [loading, setLoading] = useState(false);
+  const [inputSearch, setInputSearch] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     const fetchOrders = async () => {
-      if (user._id) {
-        try {
-          setLoading(true);
-          const response = await fetchOrdersByFreelancerId(user._id);
-          setOrders(response);
-        } catch (error) {
-          console.error("Failed to fetch orders:", error);
-        } finally {
-          setLoading(false);
-        }
+      try {
+        setLoading(true);
+        const response = await fetchOrdersByFreelancerId(user._id);
+        setOrders(response);
+        setFilteredOrders(response);
+      } catch (error) {
+        console.error("Failed to fetch orders:", error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchOrders();
-  }, [user._id]);
+  }, []);
+
+  useEffect(() => {
+    const filtered = orders.filter((order) => {
+      const matchesSearch = 
+        searchTerm === "" ||
+        order.client_id.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        order.service_id.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        order._id.toLowerCase().includes(searchTerm.toLowerCase());
+
+      return matchesSearch;
+    });
+
+    setFilteredOrders(filtered);
+    setCurrentPage(1);
+  }, [searchTerm, orders]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setSearchTerm(inputSearch);
+  };
 
   const toggleDropdown = (id) => {
     setActiveDropdown((prevId) => (prevId === id ? null : id));
   };
 
-  // pagination
+  const handleUpdateOrderStatus = async (orderId) => {
+    try {
+      const { value: progressStatus } = await Swal.fire({
+        title: "Update Order Status",
+        input: "select",
+        inputOptions: {
+          pending: "Pending",
+          inProgress: "In Progress",
+          completed: "Completed",
+        },
+        inputPlaceholder: "Pilih status",
+        showCancelButton: true,
+        inputValidator: (value) => {
+          if (!value) {
+            return "Pilih status order!";
+          }
+        },
+      });
+      if (progressStatus) {
+        console.log(orderId, progressStatus);
+        await updateOrderProgressStatus(orderId, { progressStatus });
+        Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: "Status order behasil diperbarui!.",
+        }).then(() => {
+          fetchOrdersByFreelancerId(user._id).then((response) => {
+            setOrders(response);
+          });
+        });
+      }
+    } catch (error) {
+      console.error("Failed to update order status:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Failed to update order status.",
+      }).then(() => {
+        fetchOrdersByFreelancerId(user._id).then((response) => {
+          setOrders(response);
+        });
+      });
+    }
+  };
+
   const indexOfLastOrder = currentPage * ordersPerPage;
   const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
-  const currentOrders = orders
+  const currentOrders = filteredOrders
     .slice()
     .reverse()
     .slice(indexOfFirstOrder, indexOfLastOrder);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  const totalPages = Math.ceil(orders.length / ordersPerPage);
+  const totalPages = Math.ceil(filteredOrders.length / ordersPerPage);
 
   const getPageNumbers = () => {
     const pageNumbers = [];
@@ -60,7 +127,7 @@ const Orders = () => {
       <main className="p-4 md:ml-64 h-auto pt-20 ">
         <h1 className="text-3xl font-bold mb-4">Daftar Pesanan</h1>
         <div className="mt-4 mb-4">
-          <form className="w-1/4">
+          <form className="w-1/4" onSubmit={handleSubmit}>
             <label
               htmlFor="default-search"
               className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-[#F2F2F2]"
@@ -89,8 +156,9 @@ const Orders = () => {
                 type="search"
                 id="default-search"
                 className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-[#F2F2F2] dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="Cari Freelancer..."
-                required
+                placeholder="Cari Pesanan..."
+                value={inputSearch}
+                onChange={(e) => setInputSearch(e.target.value)}
               />
               <button
                 type="submit"
@@ -101,7 +169,6 @@ const Orders = () => {
             </div>
           </form>
         </div>
-        {/* {actionDropdown} */}
         <div className="relative overflow-x-auto rounded-lg shadow">
           <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
             <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -119,6 +186,9 @@ const Orders = () => {
                   Status
                 </th>
                 <th scope="col" className="px-6 py-3">
+                  Pembayaran
+                </th>
+                <th scope="col" className="px-6 py-3">
                   Tanggal
                 </th>
                 <th scope="col" className="px-6 py-3"></th>
@@ -127,10 +197,15 @@ const Orders = () => {
             <tbody>
               {loading ? (
                 <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                  <th scope="row"
-                        className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                  <div className="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-24 mb-4 animate-pulse"></div>
+                  <th
+                    scope="row"
+                    className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                  >
+                    <div className="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-24 mb-4 animate-pulse"></div>
                   </th>
+                  <td className="px-6 py-4">
+                    <div className="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-24 mb-4 animate-pulse"></div>
+                  </td>
                   <td className="px-6 py-4">
                     <div className="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-24 mb-4 animate-pulse"></div>
                   </td>
@@ -163,17 +238,34 @@ const Orders = () => {
                       <td className="px-6 py-4">{order.client_id.name}</td>
                       <td className="px-6 py-4">{order.service_id.title}</td>
                       <td className="px-6 py-4">
-                        {order.status === "cancelled" && (
+                        {order.progressStatus === "inProgress" && (
                           <span className="bg-gray-200 p-2 rounded text-black">
-                            Canceled
+                            In Progress
                           </span>
                         )}
-                        {order.status === "pending" && (
+                        {order.progressStatus === "pending" && (
                           <span className="bg-yellow-200 p-2 rounded text-black text-nowrap">
                             Pending
                           </span>
                         )}
-                        {order.status === "completed" && (
+                        {order.progressStatus === "completed" && (
+                          <span className="bg-green-200 p-2 rounded text-green-900">
+                            Completed
+                          </span>
+                        )}
+                      </td>
+                      <td className="px-6 py-4">
+                        {order.paymentStatus === "cancelled" && (
+                          <span className="bg-gray-200 p-2 rounded text-black">
+                            Cancelled
+                          </span>
+                        )}
+                        {order.paymentStatus === "pending" && (
+                          <span className="bg-yellow-200 p-2 rounded text-black text-nowrap">
+                            Pending
+                          </span>
+                        )}
+                        {order.paymentStatus === "completed" && (
                           <span className="bg-green-200 p-2 rounded text-green-900">
                             Completed
                           </span>
@@ -207,20 +299,19 @@ const Orders = () => {
                             <div className="absolute bottom-full right-full z-10  bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700">
                               <ul className="py-2 flex text-sm items-center justify-center w-full text-gray-700 dark:text-gray-200">
                                 <li className="border-r">
-                                  <a
-                                    href="#"
+                                  <button
+                                    onClick={() =>
+                                      handleUpdateOrderStatus(order._id)
+                                    }
                                     className="flex items-center  px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white text-nowrap"
                                   >
-                                    Action 1
-                                  </a>
+                                    Edit
+                                  </button>
                                 </li>
                                 <li>
-                                  <a
-                                    href="#"
-                                    className="flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white text-nowrap"
-                                  >
+                                  <button className="flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white text-nowrap">
                                     Action 2
-                                  </a>
+                                  </button>
                                 </li>
                               </ul>
                             </div>

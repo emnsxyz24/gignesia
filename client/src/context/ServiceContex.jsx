@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "../utils/axiosConfig";
 import { useAuth } from "./AuthContext";
 import { parse, parseISO } from "date-fns";
+import { MySwals } from "../components/NotifyAlert";
 
 export const useServices = () => {
   const { user } = useAuth();
@@ -55,6 +56,7 @@ export const useServices = () => {
   const createService = async (serviceData) => {
     try {
       const data = { ...serviceData, freelancer_id: user._id };
+      console.log(data)
       const response = await axios.post("/api/service", data);
       return response.data;
     } catch (err) {
@@ -116,12 +118,28 @@ export const useServices = () => {
         ...order, 
         formattedUpdateAt: parseISO(order.updated_at).toLocaleDateString("id-ID")
       }))
+      
       return formattedResponse;
     } catch (err) {
+      if(err.status === 404) {
+        console.log('HOHOHO')
+      }
       console.error("Error fetching orders:", err);
       throw err;
     }
   };
+
+  const updateOrderProgressStatus = async (id, status) => { 
+    try {
+
+      const response = await axios.put(`/api/orders/${id}`, status);
+      return response.data;
+    } catch (err) {
+      console.error("Error updating order progress status:", err);
+      throw err;
+    }
+  };
+
 
   const fetchFreelancerEarnings = async (id) => {
     try {
@@ -180,5 +198,7 @@ export const useServices = () => {
     getNotifications,
     getReviews,
     createReview,
+    fetchServices,
+    updateOrderProgressStatus,
   };
 };

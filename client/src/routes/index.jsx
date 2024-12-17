@@ -1,6 +1,5 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import Cookies from "js-cookie";
-
 import { useEffect } from "react";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
@@ -117,7 +116,7 @@ export const router = createBrowserRouter([
   {
     path: "/freelancers",
     element: (
-      <ProtectedRoute>
+      <ProtectedRoute allowedRoles={["client"]}>
         <PageClient />
       </ProtectedRoute>
     ),
@@ -135,7 +134,7 @@ export const router = createBrowserRouter([
   {
     path: "/history",
     element: (
-      <ProtectedRoute>
+      <ProtectedRoute allowedRoles={["client"]}>
         <HistoryOrders />
       </ProtectedRoute>
     ),
@@ -154,7 +153,7 @@ export const router = createBrowserRouter([
   {
     path: `/details/:serviceId`,
     element: (
-      <ProtectedRoute>
+      <ProtectedRoute allowedRoles={["client"]}>
         <FreelancerDetails />
       </ProtectedRoute>
     ),

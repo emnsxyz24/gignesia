@@ -65,12 +65,9 @@ input[type=number] {
   .other-side {
     display: none;
   }
-
-  .form-side {
+  .form-side{
     border-radius: 8px;
   }
-
-
 
 }
 

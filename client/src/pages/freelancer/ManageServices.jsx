@@ -1,5 +1,4 @@
 import SideNavbar from "../../components/SideNavbar";
-import { Loading } from "../../components/Loadings";
 import { useState } from "react";
 import { useServices } from "../../context/ServiceContex";
 import { useAuth } from "../../context/AuthContext";
@@ -12,8 +11,11 @@ const ManageServices = () => {
     createService,
     deleteService,
     updateServiceStatus,
+    fetchServices,
   } = useServices();
   const { user } = useAuth();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [servicePerPage] = useState(5);
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -22,9 +24,6 @@ const ManageServices = () => {
     freelancer_id: "",
   });
 
-  if (!services) {
-    return <Loading />;
-  }
   const filteredServices = services.filter(
     (service) => service.freelancer_id._id === user._id
   );
@@ -39,8 +38,25 @@ const ManageServices = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    createService(formData);
-    window.location.reload();
+    try {
+      const response = await createService(formData);
+      response &&
+        Swal.fire(
+          "Service berhasil dibuat!",
+          "Service berhasil dibuat",
+          "success"
+        ).then(() => {
+          fetchServices();
+        });
+    } catch (err) {
+      err.status === 409
+        ? Swal.fire(
+            "Service sudah ada sebelumnya!",
+            "Gunakan nama service yang lain",
+            "error"
+          )
+        : console.log(err);
+    }
   };
   const handleUpdateServiceStatus = async (serviceId) => {
     try {
@@ -55,67 +71,85 @@ const ManageServices = () => {
         showCancelButton: true,
         inputValidator: (value) => {
           if (!value) {
-            return "You need to select a status!";
+            return "Pilih status service!";
           }
         },
       });
 
       if (status) {
-        const booleanStatus = status === 'true';
-        await updateServiceStatus(serviceId, {status :booleanStatus});
+        const booleanStatus = status === "true";
+        await updateServiceStatus(serviceId, { status: booleanStatus });
         Swal.fire({
-          title: "Status Updated!",
-          text: `Service status has been set to ${status}`,
+          title: "Status berhasil diubah!",
+          text: `Status service berhasil diubah ke ${status}`,
           icon: "success",
         }).then(() => {
-          window.location.reload();
-        })
-        
+          fetchServices();
+        });
       }
     } catch (error) {
       Swal.fire({
         title: "Error",
-        text: "Failed to update service status",
+        text: "Gagal mengubah status service",
         icon: "error",
-      })
+      });
     }
   };
 
   const handleDeleteService = async (serviceId) => {
     try {
       const result = await Swal.fire({
-        title: "Are you sure?",
-        text: "You won't be able to revert this service deletion!",
+        title: "Apa kamu yakin?",
+        text: "Kamu tidak dapat mengembalikan ini!",
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, delete it!",
+        confirmButtonText: "Ya, saya yakin!",
       });
 
       if (result.isConfirmed) {
         await deleteService(serviceId);
 
         Swal.fire({
-          title: "Deleted!",
-          text: "The service has been deleted.",
+          title: "Berhasil Dihapus!",
+          text: "Service berhasil dihapus.",
           icon: "success",
         }).then(() => {
-          window.location.reload();
-        })
+          fetchServices();
+        });
       }
     } catch (error) {
       Swal.fire({
         title: "Error",
-        text: "Failed to delete the service",
+        text: "Gagal menghapus service",
         icon: "error",
       });
     }
   };
+
+  const indexOfLastService = currentPage * servicePerPage;
+  const indexOfFistService = indexOfLastService - servicePerPage;
+  const currentServices = filteredServices
+    .slice()
+    .reverse()
+    .slice(indexOfFistService, indexOfLastService);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  const totalPages = Math.ceil(filteredServices.length / servicePerPage);
+
+  const getPageNumbers = () => {
+    const pageNumbers = [];
+    for (let i = 1; i <= totalPages; i++) {
+      pageNumbers.push(i);
+    }
+    return pageNumbers;
+  };
   return (
     <>
       <SideNavbar activeId={"3"} />
-      <main className="p-4 md:ml-64 h-auto pt-20 ">
+      <main className="p-4 md:ml-64 h-auto pt-20">
         <h1 className="text-3xl font-bold mb-4">Kelola Jasa</h1>
         <div className="p-5 bg-white shadow rounded-lg border-gray-300 dark:border-gray-600 w-full mb-2">
           <form onSubmit={handleSubmit}>
@@ -249,7 +283,7 @@ const ManageServices = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredServices.map((service, index) => (
+              {currentServices.map((service, index) => (
                 <tr
                   key={service._id}
                   className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
@@ -324,6 +358,77 @@ const ManageServices = () => {
             </tbody>
           </table>
         </div>
+        <nav aria-label="Page navigation" className="mt-4 flex justify-center">
+          <ul className="flex items-center -space-x-px h-8 text-sm">
+            <li>
+              <button
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+                className="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <span className="sr-only">Previous</span>
+                <svg
+                  className="w-2.5 h-2.5 rtl:rotate-180"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 6 10"
+                >
+                  <path
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M5 1 1 5l4 4"
+                  />
+                </svg>
+              </button>
+            </li>
+
+            {getPageNumbers().map((number) => (
+              <li key={number}>
+                <button
+                  onClick={() => paginate(number)}
+                  aria-current={currentPage === number ? "page" : undefined}
+                  className={`flex items-center justify-center px-3 h-8 leading-tight ${
+                    currentPage === number
+                      ? "z-10 text-blue-600 border border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white"
+                      : "text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                  }`}
+                >
+                  {number}
+                </button>
+              </li>
+            ))}
+
+            <li>
+              <button
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                }
+                disabled={currentPage === totalPages}
+                className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <span className="sr-only">Next</span>
+                <svg
+                  className="w-2.5 h-2.5 rtl:rotate-180"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 6 10"
+                >
+                  <path
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="m1 9 4-4-4-4"
+                  />
+                </svg>
+              </button>
+            </li>
+          </ul>
+        </nav>
       </main>
     </>
   );

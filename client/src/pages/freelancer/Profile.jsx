@@ -25,7 +25,6 @@ const Profile = () => {
 
   useEffect(() => {
     const fetchReviews = async () => {
-      if (user._id) {
         try {
           const response = await getReviews(user._id);
           setReviews(response.data);
@@ -33,9 +32,8 @@ const Profile = () => {
           console.error("Error fetching reviews:", error);
         }
       }
-    };
     fetchReviews();
-  }, [user._id]);
+  }, []);
 
   const [passwordChangeEnabled, setPasswordChangeEnabled] = useState(false);
 

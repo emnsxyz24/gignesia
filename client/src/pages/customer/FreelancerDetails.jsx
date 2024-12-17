@@ -21,7 +21,6 @@ const FreelancerDetails = () => {
       try {
         setIsLoading(true);
         const response = await fetchDetailService(serviceId);
-        console.log(response);
         setDetailService(response);
         const reviews = await getReviews(serviceId);
         const filteredReviews = reviews.data.filter(
@@ -47,7 +46,7 @@ const FreelancerDetails = () => {
       }
     };
     fetchDetailServiceAndReviews();
-  }, [serviceId]);
+  }, []);
 
   if (isLoading) return <Loading />;
   const handleOrderClick = async () => {
@@ -90,6 +89,13 @@ const FreelancerDetails = () => {
           });
         } finally {
           setIsPaymentLoading(false);
+          Swal.fire({
+            title: "Pesanan Berhasil Dibuat",
+            text: "Silahkan melanjutkan melakukan pembayaran",
+            footer:"Kunjungi halaman history untuk melihat detail pesanan dan pembayaran",
+            icon: "success",
+            confirmButtonText: "Ok",
+          })
         }
       }
     });
@@ -99,7 +105,7 @@ const FreelancerDetails = () => {
     <div className="flex flex-col min-h-screen">
       <Navbar />
       {isPaymentLoading && <Loading />}
-      <div className="flex-grow flex items-center justify-center px-4 py-8 h-screen">
+      <div className="flex-grow flex items-center justify-center px-4 py-8 h-auto lg:h-[100vh]">
         <div className="w-full max-w-screen-lg">
           <div className="container mx-auto justify-center max-w-screen-lg p-8 border rounded-xl shadow bg-[#F2F2F2]">
             <Link
@@ -191,7 +197,7 @@ const FreelancerDetails = () => {
             </button>
             <a
               target="_blank"
-              href="https://wa.me/6211111111111"
+              href={`https://wa.me/${detailService?.freelancer_id?.whatsapp_number}`}
               className="border bg-green-500 rounded-3xl w-1/5 p-3 shadow text-center hover:bg-green-600"
             >
               Kirim pesan

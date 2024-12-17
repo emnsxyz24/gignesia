@@ -11,7 +11,7 @@ const ServiceReviewModal = ({
 }) => {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
-  const { createReview } = useServices();
+  const { createReview, fetchOrdersByClientId } = useServices();
 
   const handleSubmitReview = async (e) => {
     e.preventDefault();
@@ -76,13 +76,14 @@ const ServiceReviewModal = ({
             </div>
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700 mb-2">Comment</label>
+            <label className="block text-gray-700 mb-2">Komentar</label>
             <textarea
               className="w-full border rounded p-2"
               rows="4"
+              maxLength={100}
               value={comment}
               onChange={(e) => setComment(e.target.value)}
-              placeholder="Share your experience..."
+              placeholder="Bagikan pengalaman kamu..."
               required
             />
           </div>

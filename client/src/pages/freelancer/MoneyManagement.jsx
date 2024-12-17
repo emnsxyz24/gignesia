@@ -15,22 +15,20 @@ const MoneyManagement = () => {
 
   useEffect(() => {
     const fetchOrders = async () => {
-      if (user._id) {
-        try {
-          setLoading(true);
-          const response = await fetchFreelancerEarnings(user._id);
-          const totalEarnings = response.totalEarnings;
-          setEarnings(totalEarnings.toLocaleString("id-ID"));
-          setEarningsHistory(response.earningsHistory);
-        } catch (error) {
-          console.error("Failed to fetch orders:", error);
-        } finally {
-          setLoading(false);
-        }
+      try {
+        setLoading(true);
+        const response = await fetchFreelancerEarnings(user._id);
+        const totalEarnings = response.totalEarnings;
+        setEarnings(totalEarnings.toLocaleString("id-ID"));
+        setEarningsHistory(response.earningsHistory);
+      } catch (error) {
+        console.error("Failed to fetch orders:", error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchOrders();
-  }, [user._id]);
+  }, []);
 
   const indexOfLastEarning = currentPage * earningsPerPage;
   const indexOfFirstEarning = indexOfLastEarning - earningsPerPage;
@@ -86,8 +84,10 @@ const MoneyManagement = () => {
             <tbody>
               {loading ? (
                 <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                  <th scope="row"
-                        className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                  <th
+                    scope="row"
+                    className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                  >
                     <div className="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-24 mb-4 animate-pulse"></div>
                   </th>
                   <td className="px-6 py-4">
@@ -98,7 +98,7 @@ const MoneyManagement = () => {
                   </td>
                 </tr>
               ) : (
-                currentEarnings.map((history, idx) => {
+                 currentEarnings.map((history, idx) => {
                   const parsedDate = parseISO(history.updated_at);
                   return (
                     <tr

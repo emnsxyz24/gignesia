@@ -11,7 +11,7 @@ import logo from "../assets/icons/logo.png";
 
 const Footer = () => {
   return (
-    <footer className="relative pt-16 pb-6">
+    <footer className="relative pt-16 pb-6 mt-12 w-full"> 
       <div className="container mx-auto px-4">
         <div className="flex flex-col items-center">
           <div className="mb-8">

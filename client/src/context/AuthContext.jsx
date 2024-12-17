@@ -71,7 +71,6 @@ export const AuthProvider = ({ children }) => {
           expires: 1,
           secure: process.env.NODE_ENV === "production",
         });
-
         await fetchUser();
         MySwals("Login successful", "success");
       }
@@ -85,11 +84,14 @@ export const AuthProvider = ({ children }) => {
     try {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!email || !name || !password) {
-        return MySwals("Please fill all the fields", "error");
+        MySwals("Please fill all the fields", "error");
+        return false;
       } else if (password.length < 6) {
-        return MySwals("Password must be at least 6 characters", "error");
+        MySwals("Password must be at least 6 characters", "error");
+        return false;
       } else if (!emailRegex.test(email)) {
-        return MySwals("Please enter a valid email", "error");
+        MySwals("Please enter a valid email", "error");
+        return false;  
       }
       const response = await axios.post("/api/register", {
         name,
@@ -172,7 +174,6 @@ export const AuthProvider = ({ children }) => {
     try {
       console.log(data)
       const response = await axios.put(`/api/user/${id}/profile-picture`, formData);
-
       if (response.status === 200) {
         MySwals("Profil berhasil diperbarui!", "success");
       } else {

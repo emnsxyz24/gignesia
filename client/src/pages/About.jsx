@@ -9,7 +9,7 @@ const About = () => {
   return (
     <div className={`flex flex-col ${!isAuthenticated ? "bg-[#141720] text-[#F2F2F2]" : ""}`}>
       <Navbar />
-      <div className="flex justify-center flex-col items-center mt-5">
+      <div className=" p-4 flex justify-center flex-col items-center mt-5">
         <div className="relative h-[50vh] max-w-screen-xl w-full rounded-3xl overflow-hidden mb-4">
           <img
             src={heroImage}
