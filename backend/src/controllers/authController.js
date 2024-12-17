@@ -65,7 +65,7 @@ export const login = async (req, res) => {
 
     const isMatch = await bycrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(401).json({ message: "Invalid password" });
+      return res.status(401).json({ message: "Invalid Email or password" });
     }
 
     const token = jwt.sign(

@@ -8,7 +8,6 @@ dotenv.config();
 export const midtransWebhookHandler = async (req, res) => {
   const serverKey = process.env.MIDTRANS_SERVER_KEY;
   const body = req.body;
-  console.log(body)
   try {
     const { order_id, status_code, gross_amount, signature_key } = body;
     const signatureInput = `${order_id}${status_code}${gross_amount}${serverKey}`;
@@ -37,35 +36,35 @@ export const midtransWebhookHandler = async (req, res) => {
 
     switch (body.transaction_status) {
       case 'settlement':
-        order.status = 'completed';
+        order.paymentStatus = 'completed';
         notification.message = `Pembayaran untuk pesanan #${order_id} telah diproses dan diterima.`;
     await Notification.create(notification);
 
 
         break;
       case 'pending':
-        order.status = 'pending';
+        order.paymentStatus = 'pending';
         notification.message = `Pesanan #${order_id} baru diterima`;
 
         break;
       case 'deny':
       case 'cancel':
       case 'expire':
-        order.status = 'cancelled';
+        order.paymentStatus = 'cancelled';
         notification.message = `Pesanan #${order_id} telah ditolak`;
 
         break;
       default:
-        order.status = 'unknown';
+        order.paymentStatus = 'unknown';
         notification.message = `Menunggu Pesanan...`;
 
     }
     await order.save();
     console.log(notification)
 
-    console.log(order.status);
+    console.log(order.paymentStatus);
 
-    res.status(200).json({ status: 'ok' });
+    res.status(200).json({ paymentStatus: 'ok' });
   } catch (error) {
     console.error('Midtrans Webhook Error:', error);
     res.status(500).json({ message: 'Internal server error' });

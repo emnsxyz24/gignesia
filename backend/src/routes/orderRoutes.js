@@ -5,7 +5,7 @@ import {
   getFreelancerEarnings,
   getOrderByFreelancerId,
   getOrdersByClientId,
-  updateOrderStatus,
+  updateOrderProgressStatus,
 } from "../controllers/orderController.js";
 import { auth } from "../middleware/authMiddleware.js";
 
@@ -179,7 +179,7 @@ router.get("/orders/freelancer/:freelancer_id", auth, getOrderByFreelancerId);
  *           schema:
  *             type: object
  *             properties:
- *               status:
+ *               progressStatus:
  *                 type: string
  *     responses:
  *       200:
@@ -187,7 +187,7 @@ router.get("/orders/freelancer/:freelancer_id", auth, getOrderByFreelancerId);
  *       404:
  *         description: Order not found
  */
-router.put("/orders/:id", auth, updateOrderStatus);
+router.put("/orders/:id", auth, updateOrderProgressStatus);
 
 /**
  * @swagger

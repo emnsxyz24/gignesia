@@ -16,10 +16,15 @@ const OrderSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
-  status: {
+  paymentStatus: {
     type: String,
     default: "pending",
-    enum: ["pending", "in progress", "completed", "cancelled","unknown"],
+    enum: ["pending", "inProgress", "completed", "cancelled","unknown"],
+  },
+  progressStatus: {
+    type: String,
+    default: "pending",
+    enum: ["pending", "inProgress", "completed"],
   },
   payment_gateway_id: { type: String },
   amount: { type: Number, required: true },

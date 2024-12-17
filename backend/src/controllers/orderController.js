@@ -87,18 +87,19 @@ export const getOrdersByClientId = async (req, res) => {
 };
 
 
-export const updateOrderStatus = async (req, res) => {
+export const updateOrderProgressStatus = async (req, res) => {
   const { id } = req.params;
-  const { service_status } = req.body; // Pastikan hanya service_status yang diubah
+  const { progressStatus } = req.body; // Pastikan hanya progressStatus yang diubah
 
   try {
+    console.log(id, progressStatus);
     const order = await Order.findByIdAndUpdate(id);
 
     if (!order) {
       return res.status(404).json({ message: "Order not found" });
     }
-
-    order.service_status = service_status; // Update hanya status pengerjaan jasa
+    order.progressStatus = progressStatus; // Update hanya status pengerjaan jasa
+    console.log(progressStatus)
     await order.save();
 
     res.status(200).json({ message: "Order status updated successfully" });
@@ -116,7 +117,7 @@ export const getFreelancerEarnings = async (req, res) => {
     const orders = await Order.find({
       freelancer_id: freelancer_id,
       status: "completed",
-    }).sort({ updated_at: -1 });
+    });
 
     const totalEarnings = orders.reduce((total, order) => {
       return total + order.amount;
