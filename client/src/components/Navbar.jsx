@@ -104,7 +104,7 @@ const Navbar = () => {
                   }`}
                 >
                   <img
-                    src={user.profile_picture.startsWith("/uploads") ? `https://gignesia-production.up.railway.app${user.profile_picture}` : user.profile_picture}
+                    src={user?.profile_picture.startsWith("/uploads") ? `https://gignesia-production.up.railway.app${user?.profile_picture}` : user?.profile_picture}
                     alt="Profile"
                     className="rounded-full w-10 h-10 object-cover"
                   />
