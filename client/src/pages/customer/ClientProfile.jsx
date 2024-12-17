@@ -40,6 +40,7 @@ const ClientProfile = () => {
 
   const handleAvatarChange = (e) => {
     const file = e.target.files[0];
+    console.log(file)
     setAvatar(file);
   };
   const handleSubmit = async (e) => {
@@ -131,7 +132,7 @@ const ClientProfile = () => {
               <div className="flex flex-col w-full p-5">
                 <img
                   className="mx-auto mb-4 w-36 h-36 rounded-full"
-                  src={previewPhotoUrl || `https://gignesia-production.up.railway.app${user.profile_picture}` }
+                  src={previewPhotoUrl || (user.profile_picture.startsWith("/uploads") ? `https://gignesia-production.up.railway.app${user.profile_picture}` : user.profile_picture)  }
                   alt="Default Profile"
                 />
                 <div className="p-5 border bg-gray-300 rounded-3xl w-3/4 mx-auto text-center">
