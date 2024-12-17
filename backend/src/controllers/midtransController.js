@@ -11,7 +11,6 @@ export const midtransWebhookHandler = async (req, res) => {
   try {
     const { order_id, status_code, gross_amount, signature_key } = body;
     const signatureInput = `${order_id}${status_code}${gross_amount}${serverKey}`;
-    console.log(signatureInput)
     const generatedSignature = crypto
       .createHash('sha512')
       .update(signatureInput)
@@ -60,9 +59,7 @@ export const midtransWebhookHandler = async (req, res) => {
 
     }
     await order.save();
-    console.log(notification)
 
-    console.log(order.paymentStatus);
 
     res.status(200).json({ paymentStatus: 'ok' });
   } catch (error) {

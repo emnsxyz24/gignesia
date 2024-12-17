@@ -67,7 +67,6 @@ export const updateProfilPic = async (req, res) => {
   const file = req.file;
 
   try {
-    console.log(file,id)
     const user = await User.findById(id);
     
     if (!user) {

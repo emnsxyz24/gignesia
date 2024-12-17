@@ -32,7 +32,10 @@ const Profile = () => {
           console.error("Error fetching reviews:", error);
         }
       }
-    fetchReviews();
+      fetchReviews();
+
+  
+  
   }, []);
 
   const [passwordChangeEnabled, setPasswordChangeEnabled] = useState(false);

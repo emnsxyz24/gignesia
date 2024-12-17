@@ -19,7 +19,6 @@ midtransHelper.snapPayment = async (parameter) => {
 
   try {
     const response = await snap.createTransaction(parameter);
-    console.log(response);
     return response;
   } catch (error) {
     console.error("Snap Payment Error:", error);

@@ -56,7 +56,6 @@ export const useServices = () => {
   const createService = async (serviceData) => {
     try {
       const data = { ...serviceData, freelancer_id: user._id };
-      console.log(data)
       const response = await axios.post("/api/service", data);
       return response.data;
     } catch (err) {
@@ -121,9 +120,7 @@ export const useServices = () => {
       
       return formattedResponse;
     } catch (err) {
-      if(err.status === 404) {
-        console.log('HOHOHO')
-      }
+
       console.error("Error fetching orders:", err);
       throw err;
     }

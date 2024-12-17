@@ -35,10 +35,12 @@ const Orders = () => {
 
   useEffect(() => {
     const filtered = orders.filter((order) => {
-      const matchesSearch = 
+      const matchesSearch =
         searchTerm === "" ||
         order.client_id.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        order.service_id.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        order.service_id.title
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase()) ||
         order._id.toLowerCase().includes(searchTerm.toLowerCase());
 
       return matchesSearch;
@@ -55,6 +57,50 @@ const Orders = () => {
 
   const toggleDropdown = (id) => {
     setActiveDropdown((prevId) => (prevId === id ? null : id));
+  };
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "pending":
+        return "text-yellow-600";
+      case "completed":
+        return "text-green-600";
+      case "inProgress":
+        return "text-gray-600";
+      default:
+        return "text-gray-600";
+    }
+  };
+
+  const handleDetailButton = (order) => {
+    Swal.fire({
+      title: "Detail Pesanan",
+      html: `
+        <div class="text-left space-y-2">
+          <p><strong>Order Id:</strong> #${order._id}</p>
+          <p><strong>Nama Client:</strong> ${order.client_id.name}</p>
+          <p><strong>Layanan:</strong> ${order.service_id.title}</p>
+          <p><strong>Harga:</strong> Rp${order.amount.toLocaleString(
+            "id-ID"
+          )}</p>
+          <p><strong>Status:</strong> <span class="${getStatusColor(
+            order.paymentStatus
+          )}">${
+            order.paymentStatus === "completed"
+              ? "Completed"
+              : order.paymentStatus === "inProgress"
+              ? "inProgress"
+              : order.paymentStatus === "pending"
+              ? "Pending"
+              : "Unknown"
+          }</span></p>
+          <p><strong>Tanggal Pesanan:</strong> ${order.created_at}</p>
+        </div>
+      `,
+      icon: "info",
+      showCancelButton: false,
+      confirmButtonText: "OK",
+    });
   };
 
   const handleUpdateOrderStatus = async (orderId) => {
@@ -309,8 +355,11 @@ const Orders = () => {
                                   </button>
                                 </li>
                                 <li>
-                                  <button className="flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white text-nowrap">
-                                    Action 2
+                                  <button
+                                    onClick={() => handleDetailButton(order)}
+                                    className="flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white text-nowrap"
+                                  >
+                                    Details
                                   </button>
                                 </li>
                               </ul>

@@ -172,7 +172,6 @@ export const AuthProvider = ({ children }) => {
     const formData = new FormData();
     formData.append("profile_picture", data);
     try {
-      console.log(data)
       const response = await axios.put(`/api/user/${id}/profile-picture`, formData);
       if (response.status === 200) {
         MySwals("Profil berhasil diperbarui!", "success");

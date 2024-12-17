@@ -3,7 +3,6 @@ import Review from "../models/Review.js";
 export const createReview = async (req, res) => {
   try {
     const { orderId, userId, rating, comment } = req.body;
-    console.log(orderId, userId, rating, comment);
     const newReview = new Review({ orderId, userId, rating, comment });
     await newReview.save();
     res
