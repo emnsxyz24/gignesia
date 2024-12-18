@@ -66,7 +66,7 @@ const Register = () => {
     }
   };
   return (
-    <div className="min-h-screen flex flex-col items-center pt-8 overflow-scroll register-page">
+    <div className="min-h-screen flex flex-col items-center pt-8 overflow-auto register-page">
       <div className="mx-auto">
         {loading && <Loading />}
         <nav className="absolute top-0 left-0 p-5 z-10">
@@ -77,7 +77,7 @@ const Register = () => {
             GigNesia
           </Link>
         </nav>
-        <div className="flex items-center justify-center px-4 py-8 overflow-scroll h-screen">
+        <div className="flex items-center justify-center px-4 py-8  h-screen">
           <div className="flex max-w-4xl w-full ">
             <div className="form-side lg:w-[30rem] w-full mx-auto bg-[#F2F2F2] shadow rounded-l-lg">
               <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
