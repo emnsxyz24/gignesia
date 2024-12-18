@@ -4,8 +4,8 @@ import Navbar from "../components/Navbar";
 const LandingPageNonUser = () => {
   return (
     <>
-      <div className="flex flex-col min-h-screen ">
-        <div className="mx-auto bg-[#141720]">
+      <div className="flex flex-col min-h-screen bg-[#141720]">
+        <div className="mx-auto md:mx-0">
           <div className="h-20 items-center px-6">
             <Navbar />
           </div>

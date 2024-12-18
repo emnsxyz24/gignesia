@@ -13,7 +13,7 @@ const Footer = () => {
   return (
     <footer className="relative pt-16 pb-6 mt-12 w-full"> 
       <div className="container mx-auto px-4">
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center ">
           <div className="mb-8">
             <img className="w-20" src={logo} alt="" />
           </div>

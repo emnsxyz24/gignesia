@@ -18,8 +18,8 @@ const LandingPage = () => {
   }, [user]);
   return (
     <>
-      <div className="min-h-screen flex flex-col">
-        <div className="mx-auto">
+      <div className="min-h-screen flex flex-col ">
+        <div className="mx-auto lg:mx-0">
           <Navbar />
           <div className="flex-grow">
             <div className=" flex justify-center items-center h-screen">
@@ -36,7 +36,7 @@ const LandingPage = () => {
                     </p>
                     <div className="flex gap-2">
                       <Link
-                      to="/freelancers"
+                        to="/freelancers"
                         className="bg-[#6051c2] hover:bg-[#5645c5] text-white font-bold py-3 px-6 rounded-3xl"
                       >
                         Cari Freelancer
