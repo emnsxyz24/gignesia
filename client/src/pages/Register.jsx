@@ -66,8 +66,8 @@ const Register = () => {
     }
   };
   return (
-    <div className="min-h-screen flex flex-col items-center pt-8 overflow-auto register-page">
-      <div className="mx-auto">
+    <div className="min-h-screen flex flex-col overflow-auto ">
+      <div className=" register-page mx-auto md:mx-0 ">
         {loading && <Loading />}
         <nav className="absolute top-0 left-0 p-5 z-10">
           <Link

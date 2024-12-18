@@ -42,7 +42,7 @@ const Dashboard = () => {
     <>
       <SideNavbar activeId={"1"} />
       <main className="md:ml-64 h-auto pt-20 ">
-        <div className="p-4 ">
+        <div className="p-4">
           <h1 className="text-3xl font-bold mb-4">Dashboard</h1>
           <div className="flex flex-wrap lg:flex-nowrap gap-4 mb-4 justify-center items-center mx-auto">
             <div className="p-5 flex flex-col border-2 bg-white shadow rounded-lg border-gray-300 dark:border-gray-600 h-32 w-full md:h-64">

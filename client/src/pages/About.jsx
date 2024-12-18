@@ -162,14 +162,14 @@ const About = () => {
           </h1>
           <div className="mt-4 mb-12 flex flex-wrap justify-center gap-3">
             {[
-              { name: "Rio Agustian", role: "Backend / UI - UX" },
+              { name: "Rio Agustian", role: "Backend / UI - UX", img: "https://ik.imagekit.io/eqkqbj4b1/WhatsApp%20Image%202024-12-18%20at%2022.27.44_497e3019.jpg?updatedAt=1734537435831" },
               {
                 name: "Edy Mikhael Novrianta Surbakti",
-                role: "Frontend / Backend",
+                role: "Frontend / Backend",img : "https://ik.imagekit.io/eqkqbj4b1/WhatsApp%20Image%202024-12-18%20at%2012.51.18_0259fcae.jpg?updatedAt=1734537459079"
               },
-              { name: "Anantha", role: "Frontend / UI - UX" },
-              { name: "Intan", role: "Frontend / UI - UX" },
-              { name: "Alustina", role: "Frontend / UI - UX" },
+              { name: "Anantha", role: "Frontend / UI - UX", img: "https://ik.imagekit.io/eqkqbj4b1/WhatsApp%20Image%202024-12-18%20at%2022.27.44_42496e8c.jpg?updatedAt=1734537435898" },
+              { name: "Intan", role: "Frontend / UI - UX", img: "https://ik.imagekit.io/eqkqbj4b1/image%20(8).png?updatedAt=1734538730786" },
+              { name: "Alustina", role: "Frontend / UI - UX", img: "https://ik.imagekit.io/eqkqbj4b1/image%20(6).png?updatedAt=1734538606677" },
             ].map((member, index) => (
               <div
                 key={index}
@@ -182,7 +182,7 @@ const About = () => {
                 <div className="flex flex-col p-5">
                   <img
                     className="mx-auto mb-4 w-36 h-36 rounded-full"
-                    src={temp_prof}
+                    src={member.img}
                     alt="Avatar"
                   />
                   <div className="p-5">

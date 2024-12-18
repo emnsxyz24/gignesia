@@ -8,7 +8,6 @@ import LandingPageNonUser from "../pages/LandingPageNonUser";
 import LandingPageUser from "../pages/LandingPageUser";
 import About from "../pages/About";
 import PageClient from "../pages/customer/FreelancerList";
-import PageFreelancer from "../pages/freelancer/PageFreelancer";
 import ClientProfile from "../pages/customer/ClientProfile";
 import FreelancerProfile from "../pages/freelancer/Profile";
 import FreelancerDetails from "../pages/customer/FreelancerDetails";
@@ -122,15 +121,7 @@ export const router = createBrowserRouter([
     ),
     errorElement: <ErrorPage />,
   },
-  {
-    path: "/cariclient",
-    element: (
-      <ProtectedRoute>
-        <PageFreelancer />
-      </ProtectedRoute>
-    ),
-    errorElement: <ErrorPage />,
-  },
+
   {
     path: "/history",
     element: (

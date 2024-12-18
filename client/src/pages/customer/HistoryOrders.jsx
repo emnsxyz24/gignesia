@@ -126,7 +126,7 @@ const HistoryOrders = () => {
   };
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
-      <div className=" mx-auto">
+      <div className="mx-auto md:mx-0">
         <Navbar />
         <div className="flex-grow ">
           <div className="container mx-auto px-4 py-8">

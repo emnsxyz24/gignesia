@@ -63,7 +63,7 @@ const PageFreelancer_Client = () => {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <div className=" mx-auto">
+      <div className=" mx-auto md:mx-0">
         <Navbar />
         <div className="flex-grow">
           <div className="flex justify-center h-[10rem] text-center border-t border-black mb-4">

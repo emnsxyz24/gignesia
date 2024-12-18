@@ -1,5 +1,3 @@
-import { useFilePicker } from "use-file-picker";
-
 import { useAuth } from "../../context/AuthContext";
 import { Link } from "react-router-dom";
 import { useState } from "react";
@@ -94,7 +92,7 @@ const ClientProfile = () => {
 
   return (
     <div className=" min-h-screen flex flex-col">
-      <div className=" profile-bg w-full mx-auto">
+      <div className="mx-auto md:mx-0 profile-bg w-full ">
         <nav className=" absolute top-0 left-0 m-5">
           <Link
             to="/"
@@ -103,8 +101,9 @@ const ClientProfile = () => {
             GigNesia
           </Link>
         </nav>
-        <div className="flex items-center justify-center px-4 py-8 h-screen ">
-          <div className=" w-[45rem]">
+
+        <div className="flex items-center justify-center px-4 py-8 h-screen">
+          <div className=" w-[45rem] ">
             <div className="bg-[#F2F2F2] border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
               <div className="p-5">
                 <Link to="/" className="inline-flex items-center text-xl ">
@@ -280,7 +279,7 @@ const ClientProfile = () => {
 
                     <button
                       type="submit"
-                      className="w-1/4 text-white bg-[#6051c2] shadow active:scale-[.97] hover:scale-[1.03] transition duration-200 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                      className="w-1/4 text-white bg-[#6051c2] shadow active:scale-[.97] hover:scale-[1.03] transition duration-200 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm  py-2.5 text-center"
                     >
                       Submit
                     </button>
@@ -290,6 +289,7 @@ const ClientProfile = () => {
             </div>
           </div>
         </div>
+
         <Footer />
       </div>
     </div>

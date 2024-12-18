@@ -104,7 +104,7 @@ const FreelancerDetails = () => {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <div className=" mx-auto">
+      <div className="mx-auto md:mx-0">
         <Navbar />
         {isPaymentLoading && <Loading />}
         <div className="flex-grow flex items-center justify-center px-4 py-8 h-auto lg:h-[100vh]">

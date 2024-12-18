@@ -48,9 +48,9 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center pt-8 overflow-auto login-page">
+    <div className="min-h-screen flex flex-col ">
       {loading && <Loading />}
-      <div className="mx-auto">
+      <div className="login-page mx-auto md:mx-0">
         <nav className="absolute top-0 left-0 p-5 z-10">
           <Link
             to="/"
@@ -61,7 +61,7 @@ const Login = () => {
         </nav>
         <div className="flex items-center justify-center px-4 py-8  h-screen">
           <div className="flex max-w-4xl w-full ">
-            <div className="form-side lg:w-[30rem] mx-auto w-full bg-[#F2F2F2] shadow rounded-l-lg ">
+            <div className="form-side lg:w-[30rem] mx-auto w-[22rem] bg-[#F2F2F2] shadow rounded-l-lg ">
               <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
                 <div className="flex flex-col items-center justify-center">
                   <img className="w-20" src={logo} alt="logo" />
