@@ -1,5 +1,5 @@
 import { useServices } from "../../context/ServiceContex";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
@@ -12,22 +12,22 @@ const PageFreelancer_Client = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [servicePerPage] = useState(12);
 
+    const filteredServices = services.filter((service) => {
+      const activeService = service.status === true;
+  
+      const matchesCategory =
+        !selectedCategory || service.category_id.name === selectedCategory;
+  
+      const matchesSearch =
+        searchTerm === "" ||
+        service.freelancer_id.name
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase()) ||
+        service.title.toLowerCase().includes(searchTerm.toLowerCase());
+  
+      return matchesCategory && matchesSearch && activeService;
+    });
 
-  const filteredServices = services.filter((service) => {
-    const activeService = service.status === true;
-
-    const matchesCategory =
-      !selectedCategory || service.category_id.name === selectedCategory;
-
-    const matchesSearch =
-      searchTerm === "" ||
-      service.freelancer_id.name
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase()) ||
-      service.title.toLowerCase().includes(searchTerm.toLowerCase());
-
-    return matchesCategory && matchesSearch && activeService;
-  });
 
   const handleCategorySelect = (categoryName) => {
     setSearchTerm("");    

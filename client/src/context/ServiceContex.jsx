@@ -1,15 +1,14 @@
 import { useState, useEffect } from "react";
 import axios from "../utils/axiosConfig";
 import { useAuth } from "./AuthContext";
-import { parse, parseISO } from "date-fns";
-import { MySwals } from "../components/NotifyAlert";
+import { parseISO } from "date-fns";
 
 export const useServices = () => {
   const { user } = useAuth();
   const [service, setService] = useState([]);
   const [services, setServices] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [ServiceLoading, setLoading] = useState(true);
+  const [serviceLoading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchServices();
@@ -18,6 +17,7 @@ export const useServices = () => {
 
   const fetchServices = async () => {
     try {
+      setLoading(true);
       const response = await axios.get("/api/services");
       const userId = await user._id;
       const filteredServices = response.data.filter(
@@ -25,9 +25,10 @@ export const useServices = () => {
       );
       setServices(response.data);
       setService(filteredServices);
-      setLoading(false);
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -182,7 +183,7 @@ export const useServices = () => {
   return {
     service,
     services,
-    ServiceLoading,
+    serviceLoading,
     categories,
     fetchDetailService,
     createService,
