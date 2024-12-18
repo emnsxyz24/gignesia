@@ -1,5 +1,5 @@
 import SideNavbar from "../../components/SideNavbar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useServices } from "../../context/ServiceContex";
 import { useAuth } from "../../context/AuthContext";
 import Swal from "sweetalert2";
@@ -15,6 +15,7 @@ const ManageServices = () => {
   } = useServices();
   const { user } = useAuth();
   const [currentPage, setCurrentPage] = useState(1);
+  const [isDisabled, setIsDisabled] = useState(true);
   const [servicePerPage] = useState(5);
   const [formData, setFormData] = useState({
     title: "",
@@ -35,6 +36,11 @@ const ManageServices = () => {
       [name]: value,
     }));
   };
+  useEffect(() => {
+    user.whatsapp_number.length > 6
+      ? setIsDisabled(false)
+      : setIsDisabled(true);
+  }, [user.whatsapp_number]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -254,11 +260,19 @@ const ManageServices = () => {
               ></textarea>
             </div>
             <button
+              disabled={isDisabled}
               type="submit"
-              className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+              className={`text-white  ${
+                isDisabled ? "bg-blue-300" : "bg-blue-700 hover:bg-blue-800"
+              }   focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800`}
             >
-              Tambah Jasa
+              Tambah jasa
             </button>
+            <span className="text-xs italic">
+              {isDisabled
+                ? " *Update nomor telepon di profile sebelum menambah jasa/service!"
+                : null}
+            </span>
           </form>
         </div>
         <div className="relative overflow-x-auto rounded-lg shadow mt-3">

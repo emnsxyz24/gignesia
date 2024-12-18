@@ -78,7 +78,7 @@ const Register = () => {
       </nav>
       <div className="flex items-center justify-center px-4 py-8 overflow-scroll h-screen">
         <div className="flex max-w-4xl w-full ">
-          <div className="form-side sm:w-[30rem] w-full bg-[#F2F2F2] shadow rounded-l-lg">
+          <div className="form-side w-[30rem] bg-[#F2F2F2] shadow rounded-l-lg">
             <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
               <div className="flex flex-col items-center justify-center">
                 <img className="w-20" src={logo} alt="logo"></img>

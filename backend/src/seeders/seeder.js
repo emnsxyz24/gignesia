@@ -13,48 +13,63 @@ const users = [
     email: "johndoe@example.com",
     password: "securePassword123",
     role: "client",
+    whatsapp_number: "1234567890",
   },
   {
     name: "Jane Smith",
     email: "janesmith@example.com",
     password: "freelancerPass456",
     role: "freelancer",
+    whatsapp_number: "1234567890",
+
   },
   {
     name: "Mike Johnson",
     email: "mikejohnson@example.com",
     password: "designerSkills789",
     role: "freelancer",
+    whatsapp_number: "1234567890",
+
   },
   {
     name: "Budi Santoso",
     email: "budisantoso@example.com",
     password: "ideKreatif123",
-    role: "freelancer"
+    role: "freelancer",
+    whatsapp_number: "1234567890",
+
   },
   {
     name: "Dewi Lestari",
     email: "dewilestari@example.com",
     password: "codingExpert456",
-    role: "client"
+    role: "client",
+    whatsapp_number: "1234567890",
+
   },
   {
     name: "Andi Wijaya",
     email: "andiwijaya@example.com",
     password: "penulisPro789",
-    role: "freelancer"
+    role: "freelancer",
+    whatsapp_number: "1234567890",
+
   },
   {
     name: "Siti Aisyah",
     email: "sitiaisyah@example.com",
     password: "marketingGenius321",
-    role: "client"
+    role: "client",
+    whatsapp_number: "1234567890",
+
   },
   {
     name: "Rina Sari",
     email: "rinasari@example.com",
     password: "desainHebat654",
-    role: "freelancer"
+    role: "freelancer",
+    whatsapp_number: "1234567890",
+
   },
   {
     name: "Joko Priyono",
@@ -66,25 +81,33 @@ const users = [
     name: "Lina Kartini",
     email: "linakartini@example.com",
     password: "strategiCerdas123",
-    role: "freelancer"
+    role: "freelancer",
+    whatsapp_number: "1234567890",
+
   },
   {
     name: "Agus Saputra",
     email: "agussaputra@example.com",
     password: "analisisHebat456",
-    role: "client"
+    role: "client",
+    whatsapp_number: "1234567890",
+
   },
   {
     name: "Nina Sukma",
     email: "ninasukma@example.com",
     password: "nomadDigital789",
-    role: "freelancer"
+    role: "freelancer",
+    whatsapp_number: "1234567890",
+
   },
   {
     name: "Tomy Wijaya",
     email: "tomywijaya@example.com",
     password: "koordinatorTim654",
-    role: "client"
+    role: "client",
+    whatsapp_number: "1234567890",
+
   }
 ];
 

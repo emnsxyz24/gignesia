@@ -170,7 +170,7 @@ const Orders = () => {
   return (
     <>
       <SideNavbar activeId={"2"} />
-      <main className="p-4 md:ml-64 h-auto pt-20 ">
+      <main className="p-4 md:ml-64 h-auto pt-20">
         <h1 className="text-3xl font-bold mb-4">Daftar Pesanan</h1>
         <div className="mt-4 mb-4">
           <form className="w-1/4" onSubmit={handleSubmit}>
@@ -283,7 +283,7 @@ const Orders = () => {
                       </th>
                       <td className="px-6 py-4">{order.client_id.name}</td>
                       <td className="px-6 py-4">{order.service_id.title}</td>
-                      <td className="px-6 py-4">
+                      <td className="px-6 py-4 text-nowrap">
                         {order.progressStatus === "inProgress" && (
                           <span className="bg-gray-200 p-2 rounded text-black">
                             In Progress

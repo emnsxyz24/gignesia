@@ -180,6 +180,12 @@ const Navbar = () => {
                   Cari Freelancer
                 </Link>
                 <Link
+                  to="/history"
+                  className="text-gray-700 hover:bg-gray-100 block px-3 py-2 rounded-md"
+                >
+                  History
+                </Link>
+                <Link
                   to="/profile"
                   className="text-gray-700 hover:bg-gray-100 block px-3 py-2 rounded-md"
                 >
