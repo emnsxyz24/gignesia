@@ -4,12 +4,13 @@ import Navbar from "../components/Navbar";
 const LandingPageNonUser = () => {
   return (
     <>
-      <div className="flex flex-col min-h-screen mx-auto bg-[#141720]">
+      <div className="flex flex-col min-h-screen ">
+        <div className="mx-auto bg-[#141720]">
           <div className="h-20 items-center px-6">
             <Navbar />
           </div>
           <div className="flex-grow ">
-            <div className="flex justify-center items-center h-full ">
+            <div className="flex justify-center items-center h-screen ">
               <div className="container mx-auto p-4 w-full">
                 <div className="flex flex-col md:flex-row items-center">
                   <div className="md:w-1/2 lg:w-2/3">
@@ -47,6 +48,7 @@ const LandingPageNonUser = () => {
           </div>
           <Footer />
         </div>
+      </div>
     </>
   );
 };

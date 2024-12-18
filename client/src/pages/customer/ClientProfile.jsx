@@ -93,9 +93,9 @@ const ClientProfile = () => {
   };
 
   return (
-    <div className="profile-bg min-h-screen flex flex-col">
-      <div className="">
-        <nav className="w-full absolute top-0 left-0 m-5">
+    <div className=" min-h-screen flex flex-col">
+      <div className=" profile-bg w-full mx-auto">
+        <nav className=" absolute top-0 left-0 m-5">
           <Link
             to="/"
             className="text-2xl font-bold ml-5 text-gray-900 md:text-2xl dark:text-white"
@@ -103,7 +103,7 @@ const ClientProfile = () => {
             GigNesia
           </Link>
         </nav>
-        <div className="flex-grow flex items-center justify-center px-4 py-8 h-screen ">
+        <div className="flex items-center justify-center px-4 py-8 h-screen ">
           <div className=" w-[45rem]">
             <div className="bg-[#F2F2F2] border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
               <div className="p-5">
