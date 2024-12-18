@@ -11,7 +11,7 @@ const options = {
     },
     servers: [
       {
-        url: `http://localhost:${process.env.PORT || 5000}`,
+        url: `https://gignesia-production.up.railway.app`,
         description: "Development server",
       },
     ],
