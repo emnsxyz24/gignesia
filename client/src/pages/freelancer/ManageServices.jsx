@@ -37,9 +37,11 @@ const ManageServices = () => {
     }));
   };
   useEffect(() => {
-    user.whatsapp_number.length > 6
-      ? setIsDisabled(false)
-      : setIsDisabled(true);
+    if (user.whatsapp_number) {
+      user.whatsapp_number.length > 6
+        ? setIsDisabled(false)
+        : setIsDisabled(true);
+    }
   }, [user.whatsapp_number]);
 
   const handleSubmit = async (e) => {
@@ -154,6 +156,7 @@ const ManageServices = () => {
   };
   return (
     <>
+      {console.log(user)}
       <SideNavbar activeId={"3"} />
       <main className="p-4 md:ml-64 h-auto pt-20">
         <h1 className="text-3xl font-bold mb-4">Kelola Jasa</h1>
