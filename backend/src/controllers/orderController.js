@@ -50,8 +50,8 @@ export const createOrder = async (req, res) => {
       user_id: freelancer_id,
       order_id: order._id.toString(),
       message: `Pesanan #${order._id.toString()} baru diterima`,
-    }
-    
+    };
+
     const snapResponse = await midtransHelper.snapPayment(parameter);
 
     order.payment_gateway_id = snapResponse.token;
@@ -74,18 +74,23 @@ export const createOrder = async (req, res) => {
 
 export const getOrdersByClientId = async (req, res) => {
   try {
-    const {client_id} = req.params;
-    const orders = await Order.find({client_id}).populate("freelancer_id").populate("service_id"); 
+    const { client_id } = req.params;
+    const orders = await Order.find({ client_id })
+      .populate("freelancer_id")
+      .populate("service_id");
     if (!orders || orders.length === 0) {
-      return res.status(404).json({ message: "No orders found for this client" });
+      return res
+        .status(404)
+        .json({ message: "No orders found for this client" });
     }
     res.status(200).json(orders);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Failed to fetch orders", error: error.message });
+    res
+      .status(500)
+      .json({ message: "Failed to fetch orders", error: error.message });
   }
 };
-
 
 export const updateOrderProgressStatus = async (req, res) => {
   const { id } = req.params;
@@ -113,9 +118,9 @@ export const getFreelancerEarnings = async (req, res) => {
   try {
     const orders = await Order.find({
       freelancer_id: freelancer_id,
-      status: "completed",
+      paymentStatus: "completed",
     });
-
+    console.log(orders)
     const totalEarnings = orders.reduce((total, order) => {
       return total + order.amount;
     }, 0);
@@ -138,7 +143,9 @@ export const getOrderByFreelancerId = async (req, res) => {
   const { freelancer_id } = req.params;
 
   try {
-    const orders = await Order.find({ freelancer_id }).populate("service_id").populate("client_id");
+    const orders = await Order.find({ freelancer_id })
+      .populate("service_id")
+      .populate("client_id");
     if (!orders || orders.length === 0) {
       return res
         .status(404)

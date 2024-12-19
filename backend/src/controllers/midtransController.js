@@ -59,8 +59,6 @@ export const midtransWebhookHandler = async (req, res) => {
 
     }
     await order.save();
-
-
     res.status(200).json({ paymentStatus: 'ok' });
   } catch (error) {
     console.error('Midtrans Webhook Error:', error);
