@@ -47,11 +47,13 @@ const HistoryOrders = () => {
   const getStatusColor = (status) => {
     switch (status) {
       case "pending":
-        return "text-yellow-600";
+        return "text-yellow-400";
       case "completed":
         return "text-green-600";
       case "inProgress":
         return "text-gray-600";
+      case "cancelled":
+        return "text-red-600";
       default:
         return "text-gray-600";
     }
@@ -85,9 +87,11 @@ const HistoryOrders = () => {
         order.progressStatus === "completed"
           ? "Completed"
           : order.progressStatus === "inProgress"
-          ? "inProgress"
+          ? "in Progress"
           : order.progressStatus === "pending"
           ? "Pending"
+          : order.paymentStatus === "cancelled"
+          ? "Cancelled"
           : "Unknown"
       }</span></p>
           <p><strong>Tanggal Pesanan:</strong> ${parseISO(
@@ -142,8 +146,8 @@ const HistoryOrders = () => {
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {currentOrders.map((order) => (
                   <div
-                    key={order._id}
-                    className="bg-white shadow-md rounded-lg p-4 hover:shadow-lg transition-shadow cursor-pointer"
+                  key={order._id}
+                  className="bg-white shadow-md rounded-lg p-4 hover:shadow-lg transition-shadow cursor-pointer"
                   >
                     <div className="flex justify-between items-center mb-2">
                       <h2 className="text-xl font-semibold">
@@ -160,7 +164,9 @@ const HistoryOrders = () => {
                           : order.progressStatus === "inProgress"
                           ? "In progress"
                           : order.progressStatus === "pending"
-                          ? "Pending"
+                          ? "Pending" 
+                          : order.progressStatus === "cancelled"
+                          ? "Cancelled"
                           : "Unknown"}
                       </span>
                     </div>
